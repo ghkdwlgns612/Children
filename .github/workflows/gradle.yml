@@ -47,6 +47,11 @@ jobs:
         if: github.event_name == 'push'
         run: cp ./build/libs/*.jar ./deploy/
 
+      # Deploy.sh 파일 권환변경
+      - name: Change Auth Deploy
+        if: github.event_name == 'push'
+        run: chmod +x deploy.sh
+
       # Appspec.yml 파일 Copy
       - name: Copy Appspec
         if: github.event_name == 'push'
