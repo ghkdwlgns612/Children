@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class YubbiApplication
 
 fun main(args: Array<String>) {
-	runApplication<YubbiApplication>(*args)
+    runApplication<YubbiApplication>(*args)
 }
