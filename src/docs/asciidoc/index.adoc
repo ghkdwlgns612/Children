@@ -1,0 +1,60 @@
+= KIDS-WORLD API Guide (유삐팀)
+조경현, 황지훈;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:sectlinks:
+
+[[resources]]
+= Resources
+
+// ------------------------------------------------------------------------------------------------
+//  Authentication
+// ------------------------------------------------------------------------------------------------
+[[resources_auth]]
+== Authentication
+인증과 관련된 리소스
+
+// ------------------------------------------------------------------------------------------------
+[[resources_auth_signIn]]
+=== Sign In
+로그인(인증)에 사용될 api
+
+[[resources_auth_signIn_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/~~~~~/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/~~~~~/request-headers.adoc[]
+
+===== Request Field
+include::{snippets}/~~~~~/request-fields.adoc[]
+
+===== Request Parameter
+include::{snippets}/~~~~~/request-parameters.adoc[]
+
+[[resources_auth_signIn_response]]
+==== Response
+===== Response Body
+include::{snippets}/~~~~~/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/~~~~~/response-fields.adoc[]
+
+[[resources_auth_signIn_sample]]
+==== Sample
+===== Success
+include::{snippets}/~~~~~/curl-request.adoc[]
+include::{snippets}/~~~~~/http-response.adoc[]
+
+===== Error
+====== 1.~~~~~
+include::{snippets}/~~~~~/curl-request.adoc[]
+include::{snippets}/~~~~~/http-response.adoc[]
+
+====== 2.~~~~~
+include::{snippets}/~~~~~/curl-request.adoc[]
+include::{snippets}/~~~~~/http-response.adoc[]
