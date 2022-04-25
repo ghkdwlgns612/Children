@@ -1,0 +1,9 @@
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${MYSQL_YUBBI_URL}
+        username: ${MYSQL_YUBBI_ID}
+        password: ${MYSQL_YUBBI_PW}
+    jpa:
+        database: mysql
+        show-sql: true
