@@ -14,7 +14,7 @@ indent_size = 4
 tab_width = 4
 
 # 한 줄에 사용할 수 있는 최대 문자열 길이 설정
-max_line_length = 120
+max_line_length = 150
 
 # 문자열 뒤에 따라오는 공백 제거 설정
 trim_trailing_whitespace = true

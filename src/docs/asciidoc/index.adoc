@@ -52,3 +52,230 @@ include::{snippets}/member-login/http-response.adoc[]
 추가 예정
 //include::{snippets}/~~~~~/curl-request.adoc[]
 //include::{snippets}/~~~~~/http-response.adoc[]
+
+
+
+
+// ------------------------------------------------------------------------------------------------
+//  Category
+// ------------------------------------------------------------------------------------------------
+[[resources_category]]
+== Category
+카테고리와 관련된 리소스
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_getList]]
+=== Get List (Mock)
+카테고리 목록 조회에 사용할 api +
+(활성화 상태인 카테고리 목록만 조회된다.)
+
+[[resources_category_getList_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-getCategoryList/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-getCategoryList/request-headers.adoc[]
+
+[[resources_category_getList_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-getCategoryList/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-getCategoryList/response-fields.adoc[]
+
+[[resources_category_getList_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-getCategoryList/curl-request.adoc[]
+include::{snippets}/category-getCategoryList/http-response.adoc[]
+
+===== Error
+없음
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_adminGetList]]
+=== Get List (ADMIN) (Mock)
+관리자용 카테고리 목록 조회에 사용할 api +
+(활성상태와 상관없이 모든 카테고리 목록을 조회한다.)
+
+[[resources_category_adminGetList_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-getCategoryList-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-getCategoryList-admin/request-headers.adoc[]
+
+[[resources_category_adminGetList_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-getCategoryList-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-getCategoryList-admin/response-fields.adoc[]
+
+[[resources_category_adminGetList_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-getCategoryList-admin/curl-request.adoc[]
+include::{snippets}/category-getCategoryList-admin/http-response.adoc[]
+
+===== Error
+없음
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_adminGet]]
+=== Get (ADMIN) (Mock)
+관리자용 카테고리 조회에 사용할 api
+
+[[resources_category_adminGet_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-getCategory-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-getCategory-admin/request-headers.adoc[]
+
+===== Request Parameter
+include::{snippets}/category-getCategory-admin/path-parameters.adoc[]
+
+[[resources_category_adminGet_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-getCategory-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-getCategory-admin/response-fields.adoc[]
+
+[[resources_category_adminGet_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-getCategory-admin/curl-request.adoc[]
+include::{snippets}/category-getCategory-admin/http-response.adoc[]
+
+===== Error
+====== 1.리소스가 존재하지 않는 경우
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_adminCreate]]
+=== Create (ADMIN) (Mock)
+관리자용 카테고리 등록에 사용할 api
+
+[[resources_category_adminCreate_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-createCategory-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-createCategory-admin/request-headers.adoc[]
+
+===== Request Field
+include::{snippets}/category-createCategory-admin/request-fields.adoc[]
+
+[[resources_category_adminCreate_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-createCategory-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-createCategory-admin/response-fields.adoc[]
+
+[[resources_category_adminCreate_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-createCategory-admin/curl-request.adoc[]
+include::{snippets}/category-createCategory-admin/http-response.adoc[]
+
+===== Error
+====== 1.필수값이 누락된 경우
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_adminUpdate]]
+=== Update (ADMIN) (Mock)
+관리자용 카테고리 수정에 사용할 api
+
+[[resources_category_adminUpdate_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-updateCategory-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-updateCategory-admin/request-headers.adoc[]
+
+===== Request Parameter
+include::{snippets}/category-updateCategory-admin/path-parameters.adoc[]
+
+===== Request Field
+include::{snippets}/category-updateCategory-admin/request-fields.adoc[]
+
+[[resources_category_adminUpdate_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-updateCategory-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-updateCategory-admin/response-fields.adoc[]
+
+[[resources_category_adminUpdate_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-updateCategory-admin/curl-request.adoc[]
+include::{snippets}/category-updateCategory-admin/http-response.adoc[]
+
+===== Error
+====== 1.리소스가 존재하지 않는 경우
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+====== 2.필수값이 누락된 경우
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_category_adminDelete]]
+=== Delete (ADMIN) (Mock)
+관리자용 카테고리 삭제에 사용할 api +
+(해당 카테고리에 포함되는 모든 컨텐츠도 삭제된다.)
+
+[[resources_category_adminDelete_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/category-deleteCategory-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/category-deleteCategory-admin/request-headers.adoc[]
+
+===== Request Parameter
+include::{snippets}/category-deleteCategory-admin/path-parameters.adoc[]
+
+[[resources_category_adminDelete_response]]
+==== Response
+===== Response Body
+include::{snippets}/category-deleteCategory-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/category-deleteCategory-admin/response-fields.adoc[]
+
+[[resources_category_adminDelete_sample]]
+==== Sample
+===== Success
+include::{snippets}/category-deleteCategory-admin/curl-request.adoc[]
+include::{snippets}/category-deleteCategory-admin/http-response.adoc[]
+
+===== Error
+====== 1.리소스가 존재하지 않는 경우
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
