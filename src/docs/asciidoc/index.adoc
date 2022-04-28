@@ -54,8 +54,6 @@ include::{snippets}/member-login/http-response.adoc[]
 //include::{snippets}/~~~~~/http-response.adoc[]
 
 
-
-
 // ------------------------------------------------------------------------------------------------
 //  Category
 // ------------------------------------------------------------------------------------------------
@@ -279,3 +277,235 @@ include::{snippets}/category-deleteCategory-admin/http-response.adoc[]
 //include::{snippets}/~~~~~/curl-request.adoc[]
 //include::{snippets}/~~~~~/http-response.adoc[]
 
+// ------------------------------------------------------------------------------------------------
+//  FAQ
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_getList]]
+== FAQ
+FAQ과 관련된 리소스
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_getList]]
+=== GET (Mock)
+FAQ리스트를 조회할 때 사용될 api
+
+[[resources_faq_getList_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-getFaqList/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-getFaqList/request-headers.adoc[]
+
+===== Request Parameters
+include::{snippets}/faq-getFaqList/request-parameters.adoc[]
+
+[[resources_faq_getList_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-getFaqList/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-getFaqList/response-fields.adoc[]
+
+[[resources_faq_getList_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-getFaqList/curl-request.adoc[]
+include::{snippets}/faq-getFaqList/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_getList_admin]]
+=== GET (ADMIN) (Mock)
+ADMIN이 FAQ리스트를 조회할 때 사용될 api
+
+[[resources_faq_getList_admin_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-getFaqList-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-getFaqList-admin/request-headers.adoc[]
+
+===== Request Parameters
+include::{snippets}/faq-getFaqList-admin/request-parameters.adoc[]
+
+[[resources_faq_getList_admin_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-getFaqList-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-getFaqList-admin/response-fields.adoc[]
+
+[[resources_faq_getList_admin_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-getFaqList-admin/curl-request.adoc[]
+include::{snippets}/faq-getFaqList-admin/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_adminGet]]
+=== GET List (ADMIN) (Mock)
+ADMIN이 FAQ하나를 조회할 때 사용될 api
+
+[[resources_faq_adminGet_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-getFaq-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-getFaq-admin/request-headers.adoc[]
+
+===== Request Parameters
+include::{snippets}/faq-getFaq-admin/path-parameters.adoc[]
+
+[[resources_faq_adminGet_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-getFaq-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-getFaq-admin/response-fields.adoc[]
+
+[[resources_faq_adminGet_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-getFaq-admin/curl-request.adoc[]
+include::{snippets}/faq-getFaq-admin/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_adminCreate]]
+=== Create (ADMIN) (Mock)
+ADMIN이 FAQ하나를 등록할 때 사용될 api
+
+[[resources_faq_adminCreate_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-create-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-create-admin/request-headers.adoc[]
+
+===== Request Field
+include::{snippets}/faq-create-admin/request-body.adoc[]
+
+[[resources_faq_adminCreate_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-create-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-create-admin/response-fields.adoc[]
+
+[[resources_faq_adminCreate_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-create-admin/curl-request.adoc[]
+include::{snippets}/faq-create-admin/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_adminUpdate]]
+=== Update (ADMIN) (Mock)
+ADMIN이 FAQ하나를 수정할 때 사용될 api
+
+[[resources_faq_adminUpdate_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-update-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-update-admin/request-headers.adoc[]
+
+===== Request Parameter
+include::{snippets}/faq-update-admin/path-parameters.adoc[]
+
+===== Request Field
+include::{snippets}/faq-update-admin/request-fields.adoc[]
+
+[[resources_faqUpdate_admin_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-update-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-update-admin/response-fields.adoc[]
+
+[[resources_faqUpdate_admin_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-update-admin/curl-request.adoc[]
+include::{snippets}/faq-update-admin/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_faq_adminDelete]]
+=== Delete (ADMIN) (Mock)
+ADMIN이 FAQ하나를 삭제할 때 사용될 api
+
+[[resources_faq_adminDelete_request]]
+==== Request
+
+===== Request HTTP Messages
+include::{snippets}/faq-delete-admin/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/faq-delete-admin/request-headers.adoc[]
+
+===== Request Parameters
+include::{snippets}/faq-delete-admin/path-parameters.adoc[]
+
+[[resources_faq_adminDelete_response]]
+==== Response
+===== Response Body
+include::{snippets}/faq-delete-admin/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/faq-delete-admin/response-fields.adoc[]
+
+[[resources_faq_adminDelete_sample]]
+==== Sample
+===== Success
+include::{snippets}/faq-delete-admin/curl-request.adoc[]
+include::{snippets}/faq-delete-admin/http-response.adoc[]
+
+===== Error
+====== 1.이메일 또는 비밀번호 틀렸을때
+추가 예정
+//include::{snippets}/~~~~~/curl-request.adoc[]
+//include::{snippets}/~~~~~/http-response.adoc[]
