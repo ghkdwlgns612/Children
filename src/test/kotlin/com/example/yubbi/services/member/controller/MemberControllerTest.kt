@@ -36,11 +36,11 @@ class MemberControllerTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    @DisplayName("로그인 - 성공")
-    fun loginTest_success() {
+    @DisplayName("로그인 요청데이터가 주어지고, post방식으로 로그인요청을 수행했을 때, 응답이 200 Ok이고 accessToken필드가 있는지 확인하는 테스트")
+    fun login_givenLoginRequestDto_whenPostLogin_thenStatusOkAndExistAccessToken() {
 
         // given
-        val loginRequestDto = LoginRequestDto("intern@lguplus.co.kr", "password")
+        val loginRequestDto = LoginRequestDto("ghkdwlgns612@naver.com", "1234")
 
         // when
         val perform = mockMvc.perform(
@@ -74,5 +74,45 @@ class MemberControllerTest {
                     )
                 )
             )
+    }
+
+    @Test
+    @DisplayName("DB존재하지 않은 이메일을 요청이 주어지고, post방식으로 로그인을 했을 때, Status와 Message필드가 일치하는지 확인하는 테스트")
+    fun notFoundMemberException_givenNotExistEmailLoginRequestDto_whenPostLogin_thenEqualStatusAndMessageField() {
+        // given
+        val loginRequestDto = LoginRequestDto("lg@naver.com", "1234")
+
+        // when
+        val perform = mockMvc.perform(
+            post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequestDto))
+        )
+
+        // then
+        perform.andExpect(status().is4xxClientError)
+            .andExpect(jsonPath("status").value(404))
+            .andExpect(jsonPath("message").value("존재하지 않은 이메일입니다."))
+    }
+
+    @Test
+    @DisplayName("잘못된 비밀번호가 주어지고 , post방식으로 로그인을 했을 때, Status와 Message필드가 일치하는지 확인하는 테스트")
+    fun notMatchPasswordException_givenNotMatchPasswordLoginRequestDto_whenPostLogin_thenEqualStatusAndMessageField() {
+        // given
+        val loginRequestDto = LoginRequestDto("ghkdwlgns612@naver.com", "12345")
+
+        // when
+        val perform = mockMvc.perform(
+            post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequestDto))
+        )
+
+        // then
+        perform.andExpect(status().is4xxClientError)
+            .andExpect(jsonPath("status").value(404))
+            .andExpect(jsonPath("message").value("비밀번호가 일치하지 않습니다."))
     }
 }
