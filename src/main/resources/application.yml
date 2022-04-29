@@ -7,8 +7,11 @@ spring:
     jpa:
         database: mysql
         show-sql: true
+        hibernate:
+            ddl-auto: create
+        defer-datasource-initialization: true
+
     sql:
         init:
             data-locations: classpath*:db/init.sql
-            schema-locations: classpath*:db/schema.sql
             mode: always
