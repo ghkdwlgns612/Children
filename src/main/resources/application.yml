@@ -1,4 +1,8 @@
 spring:
+    servlet:
+        multipart:
+            max-file-size: 500000000
+            max-request-size: 500000000
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: ${MYSQL_YUBBI_URL}
@@ -15,3 +19,14 @@ spring:
         init:
             data-locations: classpath*:db/init.sql
             mode: always
+cloud:
+    aws:
+        credentials:
+            accessKey: ${AWS_ACCESS_KEY}
+            secretKey: ${AWS_SECRET_KEY}
+        s3:
+            bucket: yubbi-contents-bucket
+        region:
+            static: ap-northeast-2
+        stack:
+            auto: false

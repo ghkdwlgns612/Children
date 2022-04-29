@@ -16,3 +16,16 @@ spring:
 logging.level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+cloud:
+    aws:
+        credentials:
+            accessKey: "AKIAVRKDLKKXQZVZ3SHY"
+            secretKey: "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"
+        s3:
+            bucket: yubbi-contents-bucket
+        region:
+            static: ap-northeast-2
+        stack:
+            auto: false
+
