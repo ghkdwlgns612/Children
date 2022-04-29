@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
 
-@WebMvcTest
+@WebMvcTest(FaqController::class)
 @AutoConfigureRestDocs
 class FaqControllerTest {
 

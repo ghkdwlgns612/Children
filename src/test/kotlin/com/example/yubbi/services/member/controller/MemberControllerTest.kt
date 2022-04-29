@@ -1,12 +1,13 @@
 package com.example.yubbi.services.member.controller
 
-import com.example.yubbi.services.member.controller.dto.LoginRequestDto
+import com.example.yubbi.services.member.controller.dto.request.LoginRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
@@ -23,7 +24,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class MemberControllerTest {
 
@@ -38,9 +40,7 @@ class MemberControllerTest {
     fun loginTest_success() {
 
         // given
-        val email = "intern@lguplus.co.kr"
-        val password = "password"
-        val loginRequestDto = LoginRequestDto(email, password)
+        val loginRequestDto = LoginRequestDto("intern@lguplus.co.kr", "password")
 
         // when
         val perform = mockMvc.perform(

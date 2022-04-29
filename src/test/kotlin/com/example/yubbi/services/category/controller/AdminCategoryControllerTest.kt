@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest
+@WebMvcTest(AdminCategoryController::class)
 @AutoConfigureRestDocs
 class AdminCategoryControllerTest {
 

@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@WebMvcTest
+@WebMvcTest(AdminContentController::class)
 @AutoConfigureRestDocs
 class AdminContentControllerTest {
 

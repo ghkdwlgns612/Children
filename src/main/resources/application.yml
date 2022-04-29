@@ -7,3 +7,8 @@ spring:
     jpa:
         database: mysql
         show-sql: true
+    sql:
+        init:
+            data-locations: classpath*:db/init.sql
+            schema-locations: classpath*:db/schema.sql
+            mode: always
