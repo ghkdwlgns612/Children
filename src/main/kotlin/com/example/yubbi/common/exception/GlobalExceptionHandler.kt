@@ -1,7 +1,9 @@
 package com.example.yubbi.common.exception
 
+import com.example.yubbi.common.exception.custom.ForbiddenException
 import com.example.yubbi.common.exception.custom.NotFoundMemberException
 import com.example.yubbi.common.exception.custom.NotMatchPasswordException
+import com.example.yubbi.common.exception.custom.UnAuthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -23,5 +25,15 @@ class GlobalExceptionHandler {
     @ExceptionHandler(value = [NotFoundMemberException::class])
     fun notFoundMemberExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ErrorCode.NOT_FOUND_MEMBER))
+    }
+
+    @ExceptionHandler(value = [UnAuthorizedException::class])
+    fun unAuthorizedExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(ErrorCode.UNAUTHORIZED))
+    }
+
+    @ExceptionHandler(value = [ForbiddenException::class])
+    fun forbiddenExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse(ErrorCode.FORBIDDEN))
     }
 }
