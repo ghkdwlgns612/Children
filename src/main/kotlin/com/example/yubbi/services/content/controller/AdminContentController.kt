@@ -106,12 +106,12 @@ class AdminContentController {
     }
 
     @PostMapping
-    fun createCategory(@ModelAttribute adminContentCreateRequestDto: AdminContentCreateRequestDto): ResponseEntity<AdminContentCreateResponseDto> {
+    fun createContent(@ModelAttribute adminContentCreateRequestDto: AdminContentCreateRequestDto): ResponseEntity<AdminContentCreateResponseDto> {
         return ResponseEntity.ok().body(AdminContentCreateResponseDto(5))
     }
 
     @PostMapping("/{contentId}")
-    fun updateCategory(
+    fun updateContent(
         @PathVariable contentId: Int,
         @ModelAttribute adminContentCreateRequestDto: AdminContentCreateRequestDto
     ): ResponseEntity<AdminContentUpdateResponseDto> {
