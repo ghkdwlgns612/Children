@@ -2,13 +2,14 @@ package com.example.yubbi.services.faq.controller
 
 import com.example.yubbi.services.faq.controller.dto.response.FaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListResponseDto
+import com.example.yubbi.services.faq.service.FaqService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class FaqController {
+class FaqController(private val faqService: FaqService) {
     // FAQ목록조회
     @GetMapping("/faqs")
     fun getFaqListController(

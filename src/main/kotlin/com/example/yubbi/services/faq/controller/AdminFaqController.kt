@@ -9,6 +9,7 @@ import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListRespon
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqUpdateResponseDto
+import com.example.yubbi.services.faq.service.FaqService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 @RestController
-class AdminFaqController {
+class AdminFaqController(private val faqService: FaqService) {
 
     // FAQ목록조회
     @GetMapping("/admin/faqs")
