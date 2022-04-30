@@ -10,6 +10,7 @@ import com.example.yubbi.services.category.controller.dto.response.AdminCategory
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryModifierResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
+import com.example.yubbi.services.category.service.CategoryService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,7 +24,7 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/admin/categories")
-class AdminCategoryController {
+class AdminCategoryController(private val categoryService: CategoryService) {
 
     @GetMapping
     fun getCategoryList(): ResponseEntity<AdminCategoryListResponseDto> {
