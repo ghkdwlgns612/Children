@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class FaqController(private val faqService: FaqService) {
-    // FAQ목록조회
+
+    // FAQ목록조회 // TODO : 구현 필요
     @GetMapping("/faqs")
     fun getFaqListController(
         @RequestParam page: Int,

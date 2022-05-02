@@ -1,5 +1,6 @@
 package com.example.yubbi.services.faq.controller
 
+import com.example.yubbi.common.exception.ErrorCode
 import com.example.yubbi.services.faq.controller.dto.request.AdminFaqCreateRequestDto
 import com.example.yubbi.services.faq.controller.dto.request.AdminFaqUpdateRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -162,7 +163,7 @@ class AdminFaqControllerTest {
 
     @Test
     @DisplayName("AdminCreateRequestDto가 주어지고, POST방식으로 FAQ를 생성했을 때, 응답이 200 Ok이고 AdminCreateResponseDto의 필드가 존재하는지 확인하는 테스트")
-    fun createFaqAdmin_givenAdminCreateRequestDto_whenPostCreateFaq_thenStatusOkAndExistAdminCreateResponseDto() {
+    fun createFaq_givenAdminCreateRequestDto_whenPostCreateFaq_thenStatusOkAndExistAdminCreateResponseDto() {
         // given
         val request = AdminFaqCreateRequestDto("question", "answer")
         val accessToken = "1_ADMIN"
@@ -181,7 +182,7 @@ class AdminFaqControllerTest {
             .andExpect(jsonPath("faqId").isNumber)
             .andDo(
                 document(
-                    "faq-create-admin",
+                    "faq-createFaq-admin",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestHeaders(
@@ -193,12 +194,41 @@ class AdminFaqControllerTest {
                             .description("인증 정보 헤더 +" + "\n" + "로그인 시 받은 accessToken")
                     ),
                     requestFields(
-                        fieldWithPath("question").description("FAQ에 등록할 질문"),
-                        fieldWithPath("answer").description("등록되어질 FAQ 질문에 대한 답변")
+                        fieldWithPath("question").description("등록할 FAQ의 질문 (필수)"),
+                        fieldWithPath("answer").description("등록할 FAQ의 답변 (필수)")
                     ),
                     responseFields(
                         fieldWithPath("faqId").description("등록되어진 FAQ의 Id")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("잘못된(필수값 누락) AdminCreateRequestDto가 주어지고, POST방식으로 FAQ를 생성했을 때, 응답이 400 Bad Request인지 확인하는 테스트")
+    fun createFaq_givenWrongAdminCreateRequestDto_whenPostCreateFaq_thenStatusBadRequest() {
+        // given
+        val wrongAdminFaqCreateRequestDto = AdminFaqCreateRequestDto("", "answer")
+        val accessToken = "1_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            post("/admin/faqs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(wrongAdminFaqCreateRequestDto))
+        )
+
+        // then
+        perform.andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "faq-createFaq-admin-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

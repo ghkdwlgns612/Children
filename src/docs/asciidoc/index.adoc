@@ -632,40 +632,39 @@ include::{snippets}/faq-getFaq-admin/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminCreate]]
-=== [POST][ADMIN] FAQ 등록 (M)
+=== [POST][ADMIN] FAQ 등록
 ADMIN이 FAQ하나를 등록할 때 사용될 api
 
 [[resources_faq_adminCreate_request]]
 ==== Request
 
 ===== Request HTTP Messages
-include::{snippets}/faq-create-admin/http-request.adoc[]
+include::{snippets}/faq-createFaq-admin/http-request.adoc[]
 
 ===== Request Header
-include::{snippets}/faq-create-admin/request-headers.adoc[]
+include::{snippets}/faq-createFaq-admin/request-headers.adoc[]
 
 ===== Request Field
-include::{snippets}/faq-create-admin/request-fields.adoc[]
+include::{snippets}/faq-createFaq-admin/request-fields.adoc[]
 
 [[resources_faq_adminCreate_response]]
 ==== Response
 ===== Response Body
-include::{snippets}/faq-create-admin/response-body.adoc[]
+include::{snippets}/faq-createFaq-admin/response-body.adoc[]
 
 ===== Response Field
-include::{snippets}/faq-create-admin/response-fields.adoc[]
+include::{snippets}/faq-createFaq-admin/response-fields.adoc[]
 
 [[resources_faq_adminCreate_sample]]
 ==== Sample
 ===== Success
-include::{snippets}/faq-create-admin/curl-request.adoc[]
-include::{snippets}/faq-create-admin/http-response.adoc[]
+include::{snippets}/faq-createFaq-admin/curl-request.adoc[]
+include::{snippets}/faq-createFaq-admin/http-response.adoc[]
 
 ===== Error
-====== 1.이메일 또는 비밀번호 틀렸을때
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.요청이 잘못된 경우 (필수값 누락 또는 잘못된 값 포함)
+include::{snippets}/faq-createFaq-admin-badRequest/curl-request.adoc[]
+include::{snippets}/faq-createFaq-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminUpdate]]
