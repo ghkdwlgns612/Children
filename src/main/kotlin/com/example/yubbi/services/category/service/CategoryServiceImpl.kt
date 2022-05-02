@@ -1,7 +1,9 @@
 package com.example.yubbi.services.category.service
 
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryCreateRequestDto
+import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryCreateResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
 import com.example.yubbi.services.category.domain.Category
@@ -58,5 +60,34 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         )
 
         return AdminCategoryCreateResponseDto(createdCategory.getCategoryId()!!)
+    }
+
+    override fun updateCategory(
+        categoryId: Int,
+        adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,
+        modifier: Member
+    ): AdminCategoryUpdateResponseDto {
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
+        val categoryList = categoryRepository.findAllNotIsDeleted()
+
+        val oldPriority = category.getPriority()!!
+        val updatePriority = adminCategoryUpdateRequestDto.priority
+
+        if (oldPriority < updatePriority) {
+            categoryList.forEach { category ->
+                if (category.getPriority()!! in (oldPriority + 1)..updatePriority) {
+                    category.decreasePriority()
+                }
+            }
+        } else if (oldPriority > updatePriority) {
+            categoryList.forEach { category ->
+                if (category.getPriority()!! in updatePriority until oldPriority) {
+                    category.increasePriority()
+                }
+            }
+        }
+
+        category.setUpdateInformation(adminCategoryUpdateRequestDto, modifier)
+        return AdminCategoryUpdateResponseDto(category.getCategoryId()!!)
     }
 }

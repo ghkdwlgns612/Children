@@ -2,6 +2,7 @@ package com.example.yubbi.services.category.domain
 
 import com.example.yubbi.common.domain.BaseTime
 import com.example.yubbi.common.utils.ActiveStatus
+import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
 import com.example.yubbi.services.member.domain.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
@@ -89,5 +90,18 @@ class Category constructor() : BaseTime() {
 
     fun increasePriority() {
         this.priority = this.priority!! + 1
+    }
+
+    fun decreasePriority() {
+        this.priority = this.priority!! - 1
+    }
+
+    fun setUpdateInformation(adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto, modifier: Member) {
+        this.title = adminCategoryUpdateRequestDto.title
+        this.description = adminCategoryUpdateRequestDto.description
+        this.activeStatus = adminCategoryUpdateRequestDto.activeStatus
+        this.priority = adminCategoryUpdateRequestDto.priority
+        this.lastModifier = modifier
+        setLastModifiedAt(LocalDateTime.now())
     }
 }

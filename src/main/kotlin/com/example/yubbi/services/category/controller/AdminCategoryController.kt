@@ -103,13 +103,16 @@ class AdminCategoryController(
         return ResponseEntity.ok().body(adminCategoryCreateResponseDto)
     }
 
-    // TODO : 구현 필요
     @PutMapping("/{categoryId}")
     fun updateCategory(
         @PathVariable categoryId: Int,
-        @RequestBody adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto
+        @RequestBody adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?
     ): ResponseEntity<AdminCategoryUpdateResponseDto> {
-        return ResponseEntity.ok().body(AdminCategoryUpdateResponseDto(categoryId))
+
+        val adminMember = memberService.getAdminMemberByAccessToken(accessToken)
+
+        return ResponseEntity.ok().body(categoryService.updateCategory(categoryId, adminCategoryUpdateRequestDto, adminMember))
     }
 
     // TODO : 구현 필요
