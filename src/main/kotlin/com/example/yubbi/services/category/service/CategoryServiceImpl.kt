@@ -33,17 +33,29 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     override fun createCategory(adminCategoryCreateRequestDto: AdminCategoryCreateRequestDto, creator: Member): AdminCategoryCreateResponseDto {
 
-        val category = Category(
-            adminCategoryCreateRequestDto.title,
-            adminCategoryCreateRequestDto.description,
-            adminCategoryCreateRequestDto.activeStatus,
-            adminCategoryCreateRequestDto.priority,
-            creator
+        var priority = adminCategoryCreateRequestDto.priority
+
+        val categoryList = categoryRepository.findAllNotIsDeleted()
+
+        if (priority > categoryList.size + 1) {
+            priority = categoryList.size + 1
+        } else {
+            categoryList.forEach() {
+                if (priority <= it.getPriority()!!) {
+                    it.increasePriority()
+                }
+            }
+        }
+
+        val createdCategory = categoryRepository.save(
+            Category(
+                adminCategoryCreateRequestDto.title,
+                adminCategoryCreateRequestDto.description,
+                adminCategoryCreateRequestDto.activeStatus,
+                priority,
+                creator
+            )
         )
-
-        // TODO: 우선순위 정리하는 로직 들어가야함
-
-        val createdCategory = categoryRepository.save(category)
 
         return AdminCategoryCreateResponseDto(createdCategory.getCategoryId()!!)
     }

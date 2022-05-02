@@ -6,11 +6,9 @@ import org.springframework.data.jpa.repository.Query
 
 interface CategoryRepository : JpaRepository<Category, Int> {
 
-    @Query(
-        "select c" +
-            " from Category c" +
-            " where c.activeStatus = 'ACTIVE'" +
-            " and c.isDeleted = false"
-    )
+    @Query("select c from Category c where c.activeStatus = 'ACTIVE' and c.isDeleted = false")
     fun findActiveCategories(): List<Category>
+
+    @Query("select c from Category c where c.isDeleted = false")
+    fun findAllNotIsDeleted(): List<Category>
 }

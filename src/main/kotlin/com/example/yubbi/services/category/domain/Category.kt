@@ -86,4 +86,8 @@ class Category constructor() : BaseTime() {
     fun setIsDeleted(isDeleted: Boolean) {
         this.isDeleted = isDeleted
     }
+
+    fun increasePriority() {
+        this.priority = this.priority!! + 1
+    }
 }
