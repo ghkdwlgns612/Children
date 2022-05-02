@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
 
 data class AdminContentCreateRequestDto(
+    val contentId: Int,
     val categoryId: Int,
     val title: String,
     val description: String,

@@ -3,12 +3,15 @@ package com.example.yubbi.services.content.domain
 import com.example.yubbi.common.domain.BaseTime
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
+import com.example.yubbi.services.category.domain.Category
+import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
 import com.example.yubbi.services.member.domain.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType.LAZY
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -56,22 +59,25 @@ class Content constructor() : BaseTime() {
     @Column(name = "is_deleted")
     private var isDeleted: Boolean? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "last_modifier")
     private var lastModifier: Member? = null
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "category_id")
+    private var category: Category? = null
     constructor(
-        title: String,
-        description: String,
-        imageUrl: String,
-        videoUrl: String,
-        activeStatus: ActiveStatus,
-        displayStartDate: LocalDateTime,
-        displayEndDate: LocalDateTime,
-        priority: Int,
-        uploadStatus: UploadStatus,
-        isDeleted: Boolean,
-        lastModifier: Member
+        title: String?,
+        description: String?,
+        imageUrl: String?,
+        videoUrl: String?,
+        activeStatus: ActiveStatus?,
+        displayStartDate: LocalDateTime?,
+        displayEndDate: LocalDateTime?,
+        priority: Int?,
+        uploadStatus: UploadStatus?,
+        isDeleted: Boolean?,
+        lastModifier: Member?
     ) : this() {
         this.title = title
         this.description = description
@@ -88,6 +94,9 @@ class Content constructor() : BaseTime() {
         this.setLastModifiedAt(LocalDateTime.now())
     }
 
+    fun getContentId(): Int? {
+        return this.contentId
+    }
     fun getTitle(): String? {
         return this.title
     }
@@ -124,5 +133,22 @@ class Content constructor() : BaseTime() {
 
     fun setIsDeleted(isDeleted: Boolean) {
         this.isDeleted = isDeleted
+    }
+    fun setImageUrlAndVideoUrlAndUploadStatus(imageUrl: String, videoUrl: String, uploadStatus: UploadStatus) {
+        this.imageUrl = imageUrl
+        this.videoUrl = videoUrl
+        this.uploadStatus = uploadStatus
+    }
+
+    fun setCreateInformation(adminContentCreateRequestDto: AdminContentCreateRequestDto, category: Category, member: Member) {
+        this.category = category
+        this.title = adminContentCreateRequestDto.title
+        this.description = adminContentCreateRequestDto.description
+        this.activeStatus = ActiveStatus.IN_ACTIVE
+        this.displayStartDate = adminContentCreateRequestDto.displayStartDate
+        this.displayEndDate = adminContentCreateRequestDto.displayEndDate
+        this.priority = adminContentCreateRequestDto.priority
+        this.lastModifier = member
+        setLastModifiedAt(LocalDateTime.now())
     }
 }
