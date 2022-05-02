@@ -5,6 +5,7 @@ import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
 import com.example.yubbi.services.category.domain.Category
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
+import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import com.example.yubbi.services.member.domain.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
@@ -66,6 +67,7 @@ class Content constructor() : BaseTime() {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
     private var category: Category? = null
+
     constructor(
         title: String?,
         description: String?,
@@ -97,36 +99,47 @@ class Content constructor() : BaseTime() {
     fun getContentId(): Int? {
         return this.contentId
     }
+
     fun getTitle(): String? {
         return this.title
     }
+
     fun getDescription(): String? {
         return this.description
     }
+
     fun getImageUrl(): String? {
         return this.imageUrl
     }
+
     fun getVideoUrl(): String? {
         return this.videoUrl
     }
+
     fun getActiveStatus(): ActiveStatus? {
         return this.activeStatus
     }
+
     fun getDisplayStartDate(): LocalDateTime? {
         return this.displayStartDate
     }
+
     fun getDisplayEndDate(): LocalDateTime? {
         return this.displayEndDate
     }
+
     fun getPriority(): Int? {
         return this.priority
     }
+
     fun getUploadStatus(): UploadStatus? {
         return this.uploadStatus
     }
+
     fun getIsDeleted(): Boolean? {
         return this.isDeleted
     }
+
     fun getLastModifier(): Member? {
         return this.lastModifier
     }
@@ -134,6 +147,7 @@ class Content constructor() : BaseTime() {
     fun setIsDeleted(isDeleted: Boolean) {
         this.isDeleted = isDeleted
     }
+
     fun setImageUrlAndVideoUrlAndUploadStatus(imageUrl: String, videoUrl: String, uploadStatus: UploadStatus) {
         this.imageUrl = imageUrl
         this.videoUrl = videoUrl
@@ -148,6 +162,25 @@ class Content constructor() : BaseTime() {
         this.displayStartDate = adminContentCreateRequestDto.displayStartDate
         this.displayEndDate = adminContentCreateRequestDto.displayEndDate
         this.priority = adminContentCreateRequestDto.priority
+        this.lastModifier = member
+        this.isDeleted = false
+        setLastModifiedAt(LocalDateTime.now())
+    }
+
+    fun setUploadStatusAndIsDeleted(uploadStatus: UploadStatus, isDeleted: Boolean) {
+        this.isDeleted = isDeleted
+        this.uploadStatus = uploadStatus
+        setLastModifiedAt(LocalDateTime.now())
+    }
+
+    fun setUpdateInformation(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, category: Category, member: Member) {
+        this.category = category
+        this.title = adminContentUpdateRequestDto.title
+        this.description = adminContentUpdateRequestDto.description
+        this.activeStatus = adminContentUpdateRequestDto.activeStatus
+        this.displayStartDate = adminContentUpdateRequestDto.displayStartDate
+        this.displayEndDate = adminContentUpdateRequestDto.displayEndDate
+        this.priority = adminContentUpdateRequestDto.priority
         this.lastModifier = member
         setLastModifiedAt(LocalDateTime.now())
     }

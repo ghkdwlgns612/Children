@@ -3,6 +3,7 @@ package com.example.yubbi.services.content.controller
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
+import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import com.example.yubbi.services.content.controller.dto.response.AdminCategoryOfContentResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentCreateResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentDeleteResponseDto
@@ -19,9 +20,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
+
 @Validated
 @RestController
 @RequestMapping("/admin/contents")
@@ -117,11 +119,13 @@ class AdminContentController @Autowired constructor(private val contentService: 
     fun uploadContent(
         @RequestParam("image") imageFile: MultipartFile,
         @RequestParam("video") videoFile: MultipartFile,
+        @RequestParam("contentId") contentId: Int?,
         @RequestHeader("Authorization") accessToken: String?
     ): ResponseEntity<AdminContentUploadResponseDto> {
         val member = memberService.getAdminMemberByAccessToken(accessToken)
-        return ResponseEntity.ok().body(contentService.uploadContent(imageFile, videoFile, member))
+        return ResponseEntity.ok().body(contentService.uploadContent(imageFile, videoFile, member, contentId))
     }
+
     @PostMapping
     fun createContent(
         @RequestBody adminContentCreateRequestDto: AdminContentCreateRequestDto,
@@ -131,12 +135,14 @@ class AdminContentController @Autowired constructor(private val contentService: 
         return ResponseEntity.ok().body(contentService.createContent(adminContentCreateRequestDto, member))
     }
 
-    @PostMapping("/{contentId}")
+    @PutMapping("/{contentId}")
     fun updateContent(
         @PathVariable contentId: Int,
-        @ModelAttribute adminContentCreateRequestDto: AdminContentCreateRequestDto
+        @RequestBody adminContentUpdateRequestDto: AdminContentUpdateRequestDto,
+        @RequestHeader("Authorization") accessToken: String?
     ): ResponseEntity<AdminContentUpdateResponseDto> {
-        return ResponseEntity.ok().body(AdminContentUpdateResponseDto(contentId))
+        val member = memberService.getAdminMemberByAccessToken(accessToken)
+        return ResponseEntity.ok().body(contentService.updateContent(adminContentUpdateRequestDto, member))
     }
 
     @DeleteMapping("/{contentId}")

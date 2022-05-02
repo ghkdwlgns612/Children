@@ -26,32 +26,43 @@ class ContentServiceImpl @Autowired constructor(
     private val categoryRepository: CategoryRepository
 ) : ContentService {
 
-    override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member): AdminContentUploadResponseDto {
-        val content = contentRepository.save(
-            Content(
-                null, null, null, null,
-                ActiveStatus.IN_ACTIVE, null, null, null, UploadStatus.UPLOADING, true, member
+    override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto {
+        val content = if (contentId == null) {
+            contentRepository.save(
+                Content(
+                    null, null, null, null,
+                    ActiveStatus.IN_ACTIVE, null, null, null, UploadStatus.UPLOADING, true, member
+                )
             )
-        )
+        } else {
+            val findContent = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+            findContent.setUploadStatusAndIsDeleted(UploadStatus.UPLOADING, true)
+            findContent
+        }
 
         val imageUrl = s3Service.upload(imageFile)
         val videoUrl = s3Service.upload(videoFile)
         content.setImageUrlAndVideoUrlAndUploadStatus(imageUrl, videoUrl, UploadStatus.SUCCESS)
         val updatedContent = contentRepository.save(content)
-        return AdminContentUploadResponseDto(updatedContent.getContentId(), UploadStatus.UPLOADING)
+        return AdminContentUploadResponseDto(updatedContent.getContentId(), updatedContent.getUploadStatus())
     }
 
     override fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto {
         val content = contentRepository.findById(adminContentCreateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
-
         val category = categoryRepository.findById(adminContentCreateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
+
         content.setCreateInformation(adminContentCreateRequestDto, category, member)
         val updatedContent = contentRepository.save(content)
         return makeAdminContentCreateResponseDto(updatedContent)
     }
 
-    override fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto): AdminContentUpdateResponseDto {
-        return AdminContentUpdateResponseDto(1)
+    override fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto {
+        val content = contentRepository.findById(adminContentUpdateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+        val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
+
+        content.setUpdateInformation(adminContentUpdateRequestDto, category, member)
+        val updatedContent = contentRepository.save(content)
+        return makeAdminContentUpdateResponseDto(updatedContent)
     }
 
     override fun deleteContent(contentId: Int): AdminContentDeleteResponseDto {
@@ -59,6 +70,10 @@ class ContentServiceImpl @Autowired constructor(
     }
 
     private fun makeAdminContentCreateResponseDto(content: Content): AdminContentCreateResponseDto {
-        return AdminContentCreateResponseDto(content.getContentId())
+        return AdminContentCreateResponseDto(content.getContentId()!!)
+    }
+
+    private fun makeAdminContentUpdateResponseDto(content: Content): AdminContentUpdateResponseDto {
+        return AdminContentUpdateResponseDto(content.getContentId()!!)
     }
 }

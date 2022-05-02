@@ -2,7 +2,6 @@ package com.example.yubbi.services.content.controller
 
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
-import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +15,6 @@ import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
@@ -28,8 +26,6 @@ import org.springframework.restdocs.request.RequestDocumentation.requestParamete
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.transaction.Transactional
 
 @SpringBootTest
@@ -267,78 +263,78 @@ class AdminContentControllerTest {
     //         )
     // }
 
-    @Test
-    @DisplayName("accessToken과 contentId와 content정보가 주어지고, 컨텐츠를 post방식으로 수정했을때, 응답이 200 Ok이고 수정된 contentId가 반환되는지 확인하는 테스트")
-    fun updateContent_givenAccessTokenAndContentIdAndAdminContentUpdateRequestDto_whenPostContent_thenStatusOkAndExistUpdatedContentId() {
-        // given
-        val accessToken = "1_ADMIN"
-        val contentId = 1
-        val adminContentUpdateRequestDto = AdminContentUpdateRequestDto(
-            1,
-            "UpdateContentTitle",
-            "UpdateContentDescription",
-            ActiveStatus.ACTIVE,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            3
-        )
-
-        // when
-        val perform = mockMvc.perform(
-            multipart("/admin/contents/{contentId}", contentId)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .param("categoryId", adminContentUpdateRequestDto.categoryId.toString())
-                .param("title", adminContentUpdateRequestDto.title)
-                .param("description", adminContentUpdateRequestDto.description)
-                .param("activeStatus", adminContentUpdateRequestDto.activeStatus.name)
-                .param(
-                    "displayStartDate",
-                    adminContentUpdateRequestDto.displayStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-                )
-                .param(
-                    "displayEndDate",
-                    adminContentUpdateRequestDto.displayEndDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-                )
-                .param("priority", adminContentUpdateRequestDto.priority.toString())
-        )
-
-        // then
-        perform
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("contentId").value(contentId))
-            .andDo(
-                document(
-                    "content-updateContent-admin",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    requestHeaders(
-                        headerWithName(HttpHeaders.CONTENT_TYPE)
-                            .description("요청 메시지의 콘텐츠 타입 +" + "\n" + MediaType.MULTIPART_FORM_DATA),
-                        headerWithName(HttpHeaders.ACCEPT)
-                            .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
-                        headerWithName(HttpHeaders.AUTHORIZATION)
-                            .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
-                    ),
-                    pathParameters(
-                        parameterWithName("contentId").description("수정할 컨텐츠의 아이디")
-                    ),
-                    requestParameters(
-                        parameterWithName("categoryId").description("수정할 컨텐츠의 카테고리 아이디"),
-                        parameterWithName("title").description("수정할 컨텐츠의 제목"),
-                        parameterWithName("description").description("수정할 컨텐츠의 상세설명"),
-                        parameterWithName("activeStatus").description("수정할 컨텐츠 활성 상태 +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
-                        parameterWithName("displayStartDate").description("수정할 컨텐츠의 전시 시작시간 +" + "\n" + "( yyyy-MM-dd'T'HH:mm:ss )"),
-                        parameterWithName("displayEndDate").description("수정할 컨텐츠의 전시 시작시간 +" + "\n" + "( yyyy-MM-dd'T'HH:mm:ss )"),
-                        parameterWithName("priority").description("수정할 컨텐츠의 우선순위"),
-                    ),
-                    responseFields(
-                        fieldWithPath("contentId").description("수정된 컨텐츠 아이디")
-                    )
-                )
-            )
-    }
+    // @Test
+    // @DisplayName("accessToken과 contentId와 content정보가 주어지고, 컨텐츠를 post방식으로 수정했을때, 응답이 200 Ok이고 수정된 contentId가 반환되는지 확인하는 테스트")
+    // fun updateContent_givenAccessTokenAndContentIdAndAdminContentUpdateRequestDto_whenPostContent_thenStatusOkAndExistUpdatedContentId() {
+    //     // given
+    //     val accessToken = "1_ADMIN"
+    //     val contentId = 1
+    //     val adminContentUpdateRequestDto = AdminContentUpdateRequestDto(
+    //         1,
+    //         "UpdateContentTitle",
+    //         "UpdateContentDescription",
+    //         ActiveStatus.ACTIVE,
+    //         LocalDateTime.now(),
+    //         LocalDateTime.now(),
+    //         3
+    //     )
+    //
+    //     // when
+    //     val perform = mockMvc.perform(
+    //         multipart("/admin/contents/{contentId}", contentId)
+    //             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+    //             .accept(MediaType.APPLICATION_JSON)
+    //             .header(HttpHeaders.AUTHORIZATION, accessToken)
+    //             .param("categoryId", adminContentUpdateRequestDto.categoryId.toString())
+    //             .param("title", adminContentUpdateRequestDto.title)
+    //             .param("description", adminContentUpdateRequestDto.description)
+    //             .param("activeStatus", adminContentUpdateRequestDto.activeStatus.name)
+    //             .param(
+    //                 "displayStartDate",
+    //                 adminContentUpdateRequestDto.displayStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+    //             )
+    //             .param(
+    //                 "displayEndDate",
+    //                 adminContentUpdateRequestDto.displayEndDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+    //             )
+    //             .param("priority", adminContentUpdateRequestDto.priority.toString())
+    //     )
+    //
+    //     // then
+    //     perform
+    //         .andExpect(status().isOk)
+    //         .andExpect(jsonPath("contentId").value(contentId))
+    //         .andDo(
+    //             document(
+    //                 "content-updateContent-admin",
+    //                 preprocessRequest(prettyPrint()),
+    //                 preprocessResponse(prettyPrint()),
+    //                 requestHeaders(
+    //                     headerWithName(HttpHeaders.CONTENT_TYPE)
+    //                         .description("요청 메시지의 콘텐츠 타입 +" + "\n" + MediaType.MULTIPART_FORM_DATA),
+    //                     headerWithName(HttpHeaders.ACCEPT)
+    //                         .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
+    //                     headerWithName(HttpHeaders.AUTHORIZATION)
+    //                         .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
+    //                 ),
+    //                 pathParameters(
+    //                     parameterWithName("contentId").description("수정할 컨텐츠의 아이디")
+    //                 ),
+    //                 requestParameters(
+    //                     parameterWithName("categoryId").description("수정할 컨텐츠의 카테고리 아이디"),
+    //                     parameterWithName("title").description("수정할 컨텐츠의 제목"),
+    //                     parameterWithName("description").description("수정할 컨텐츠의 상세설명"),
+    //                     parameterWithName("activeStatus").description("수정할 컨텐츠 활성 상태 +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
+    //                     parameterWithName("displayStartDate").description("수정할 컨텐츠의 전시 시작시간 +" + "\n" + "( yyyy-MM-dd'T'HH:mm:ss )"),
+    //                     parameterWithName("displayEndDate").description("수정할 컨텐츠의 전시 시작시간 +" + "\n" + "( yyyy-MM-dd'T'HH:mm:ss )"),
+    //                     parameterWithName("priority").description("수정할 컨텐츠의 우선순위"),
+    //                 ),
+    //                 responseFields(
+    //                     fieldWithPath("contentId").description("수정된 컨텐츠 아이디")
+    //                 )
+    //             )
+    //         )
+    // }
 
     @Test
     @DisplayName("accessToken과 삭제할 contentId가 주어지고, 컨텐츠를 delete 방식으로 삭제했을때, 응답이 200 Ok이고 삭제된 contentId가 반환되는지 확인하는 테스트")
