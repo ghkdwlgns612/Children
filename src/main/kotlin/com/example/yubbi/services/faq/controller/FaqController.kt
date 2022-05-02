@@ -1,29 +1,27 @@
 package com.example.yubbi.services.faq.controller
 
-import com.example.yubbi.services.faq.controller.dto.response.FaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListResponseDto
 import com.example.yubbi.services.faq.service.FaqService
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.constraints.Min
 
+@Validated
 @RestController
 class FaqController(private val faqService: FaqService) {
 
     // FAQ목록조회 // TODO : 구현 필요
     @GetMapping("/faqs")
     fun getFaqListController(
-        @RequestParam page: Int,
-        @RequestParam size: Int?,
+        @Min(1) @RequestParam(defaultValue = "1") page: Int,
+        @Min(1) @RequestParam(defaultValue = "10") size: Int,
         @RequestParam word: String?
     ): ResponseEntity<FaqListResponseDto> {
-        val faq1 = FaqListOfOneResponseDto(1, "question1", "answer1")
-        val faq2 = FaqListOfOneResponseDto(2, "question2", "answer2")
-        val faq3 = FaqListOfOneResponseDto(3, "question3", "answer3")
 
-        val faqList = listOf(faq1, faq2, faq3)
-
-        return ResponseEntity.ok().body(FaqListResponseDto(100, page, faqList))
+        val faqListResponseDto = faqService.getFaqList(page, size, word)
+        return ResponseEntity.ok().body(faqListResponseDto)
     }
 }

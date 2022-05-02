@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import javax.validation.ConstraintViolationException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -19,7 +20,13 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse(ErrorCode.GENERAL_EXCEPTION))
     }
 
-    @ExceptionHandler(value = [HttpMessageNotReadableException::class, MethodArgumentNotValidException::class])
+    @ExceptionHandler(
+        value = [
+            HttpMessageNotReadableException::class,
+            MethodArgumentNotValidException::class,
+            ConstraintViolationException::class
+        ]
+    )
     fun badRequestExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.BAD_REQUEST))
     }

@@ -1,5 +1,6 @@
 package com.example.yubbi.services.faq.controller
 
+import com.example.yubbi.common.exception.ErrorCode
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +40,7 @@ class FaqControllerTest {
         // given
         val queryParam = LinkedMultiValueMap<String, String>()
         queryParam.add("page", "1")
-        queryParam.add("size", "5")
+        queryParam.add("size", "3")
         queryParam.add("word", "hello")
 
         // when
@@ -68,17 +69,48 @@ class FaqControllerTest {
                             .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON)
                     ),
                     requestParameters(
-                        parameterWithName("page").description("페이지 넘버"),
-                        parameterWithName("size").description("페이지 당 FAQ갯수"),
-                        parameterWithName("word").description("포함하는 단어")
+                        parameterWithName("page").description("페이지 넘버 (선택) +" + "\n" + "(기본값 1,  1이상의 숫자)"),
+                        parameterWithName("size").description("페이지 당 FAQ갯수 (선택) +" + "\n" + "(기본값 10,  1이상의 숫자)"),
+                        parameterWithName("word").description("검색할 단어 (선택) +" + "\n" + "(질문 또는 답변에 해당 단어가 있으면 검색된다.)")
                     ),
                     responseFields(
-                        fieldWithPath("totalPage").description("Word를 포함하고 있는 FAQ페이지 수"),
-                        fieldWithPath("currentPage").description("현재 선택한 페이지 수"),
-                        fieldWithPath("faqs[0].faqId").description("FAQ의 Id"),
-                        fieldWithPath("faqs[0].question").description("FAQ의 질문"),
-                        fieldWithPath("faqs[0].answer").description("FAQ의 질문에 대한 답변"),
+                        fieldWithPath("totalPage").description("전체 페이지 수"),
+                        fieldWithPath("currentPage").description("현재 페이지"),
+                        fieldWithPath("faqs[].faqId").description("FAQ의 Id"),
+                        fieldWithPath("faqs[].question").description("FAQ의 질문"),
+                        fieldWithPath("faqs[].answer").description("FAQ의 질문에 대한 답변"),
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("잘못된 페이지.사이즈.단어가 주어지고, GET방식으로 FAQ리스트를 조회했을 때, 응답이 400 BadRequest인지 확인하는 테스트")
+    fun getFaqList_givenWrongPageAndSizeAndWord_whenGetFaqList_thenStatusBadRequest() {
+        // given
+        val queryParam = LinkedMultiValueMap<String, String>()
+        queryParam.add("page", "-1")
+        queryParam.add("size", "3")
+        queryParam.add("word", "hello")
+
+        // when
+        val perform = mockMvc.perform(
+            get("/faqs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .params(queryParam)
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "faq-getFaqList-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }
