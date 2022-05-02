@@ -162,7 +162,7 @@ include::{snippets}/category-getCategory-admin/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminCreate]]
-=== [POST][ADMIN] Category 등록 (M)
+=== [POST][ADMIN] Category 등록
 관리자용 카테고리 등록에 사용할 api
 
 [[resources_category_adminCreate_request]]
@@ -191,10 +191,9 @@ include::{snippets}/category-createCategory-admin/curl-request.adoc[]
 include::{snippets}/category-createCategory-admin/http-response.adoc[]
 
 ===== Error
-====== 1.필수값이 누락된 경우
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.요청이 잘못된 경우 (필수값 누락 또는 잘못된 값 포함)
+include::{snippets}/category-createCategory-admin-badRequest/curl-request.adoc[]
+include::{snippets}/category-createCategory-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminUpdate]]

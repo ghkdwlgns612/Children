@@ -36,6 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("mysql:mysql-connector-java")
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

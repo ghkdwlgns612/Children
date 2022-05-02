@@ -1,5 +1,6 @@
 package com.example.yubbi.services.category.controller
 
+import com.example.yubbi.common.exception.ErrorCode
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryCreateRequestDto
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
@@ -196,14 +197,49 @@ class AdminCategoryControllerTest {
                             .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("등록할 카테고리의 제목"),
-                        fieldWithPath("description").description("등록할 카테고리의 상세설명"),
-                        fieldWithPath("activeStatus").description("등록할 카테고리의 활성 상태 +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
-                        fieldWithPath("priority").description("등록할 카테고리의 우선순위"),
+                        fieldWithPath("title").description("등록할 카테고리의 제목 (필수)"),
+                        fieldWithPath("description").description("등록할 카테고리의 상세설명 (필수)"),
+                        fieldWithPath("activeStatus").description("등록할 카테고리의 활성 상태 (필수) +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
+                        fieldWithPath("priority").description("등록할 카테고리의 우선순위 (필수, 1이상)"),
                     ),
                     responseFields(
                         fieldWithPath("categoryId").description("등록된 카테고리 아이디")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken과 잘못된 category 정보가 주어지고, 카테고리를 post 방식으로 생성했을때, 응답이 400 Bad Request인지 확인하는 테스트")
+    fun createCategory_givenAccessTokenAndWrongAdminCategoryCreateRequestDto_whenPostCategory_thenStatusBadRequest() {
+        // given
+        val accessToken = "1_ADMIN"
+        val wrongAdminCategoryCreateRequestDto = AdminCategoryCreateRequestDto(
+            "",
+            "카테고리 상세설명",
+            ActiveStatus.ACTIVE,
+            -1
+        )
+
+        // when
+        val perform = mockMvc.perform(
+            post("/admin/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(wrongAdminCategoryCreateRequestDto))
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "category-createCategory-admin-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

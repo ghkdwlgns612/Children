@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/categories")
 class CategoryController(private val categoryService: CategoryService) {
 
+    // TODO : 구현 필요
     @GetMapping
     fun getCategoryList(): ResponseEntity<CategoryListResponseDto> {
         val categories = listOf(

@@ -6,6 +6,8 @@ import com.example.yubbi.common.exception.custom.NotMatchPasswordException
 import com.example.yubbi.common.exception.custom.UnAuthorizedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -15,6 +17,11 @@ class GlobalExceptionHandler {
     @ExceptionHandler(value = [Exception::class])
     fun generalExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponse(ErrorCode.GENERAL_EXCEPTION))
+    }
+
+    @ExceptionHandler(value = [HttpMessageNotReadableException::class, MethodArgumentNotValidException::class])
+    fun badRequestExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.BAD_REQUEST))
     }
 
     @ExceptionHandler(value = [NotMatchPasswordException::class])
