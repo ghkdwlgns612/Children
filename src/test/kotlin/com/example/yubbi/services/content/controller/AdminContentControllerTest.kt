@@ -13,7 +13,6 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
@@ -336,42 +335,42 @@ class AdminContentControllerTest {
     //         )
     // }
 
-    @Test
-    @DisplayName("accessToken과 삭제할 contentId가 주어지고, 컨텐츠를 delete 방식으로 삭제했을때, 응답이 200 Ok이고 삭제된 contentId가 반환되는지 확인하는 테스트")
-    fun deleteContent_givenAccessTokenAndContentId_whenDeleteContent_thenStatusOkAndExistDeletedContentId() {
-        // given
-        val accessToken = "1_ADMIN"
-        val contentId = 1
-
-        // when
-        val perform = mockMvc.perform(
-            delete("/admin/contents/{contentId}", contentId)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-        )
-
-        // then
-        perform
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("contentId").value(contentId))
-            .andDo(
-                document(
-                    "content-deleteContent-admin",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    requestHeaders(
-                        headerWithName(HttpHeaders.ACCEPT)
-                            .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
-                        headerWithName(HttpHeaders.AUTHORIZATION)
-                            .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
-                    ),
-                    pathParameters(
-                        parameterWithName("contentId").description("삭제할 컨텐츠의 아이디")
-                    ),
-                    responseFields(
-                        fieldWithPath("contentId").description("삭제된 컨텐츠의 아이디")
-                    )
-                )
-            )
-    }
+    // @Test
+    // @DisplayName("accessToken과 삭제할 contentId가 주어지고, 컨텐츠를 delete 방식으로 삭제했을때, 응답이 200 Ok이고 삭제된 contentId가 반환되는지 확인하는 테스트")
+    // fun deleteContent_givenAccessTokenAndContentId_whenDeleteContent_thenStatusOkAndExistDeletedContentId() {
+    //     // given
+    //     val accessToken = "1_ADMIN"
+    //     val contentId = 1
+    //
+    //     // when
+    //     val perform = mockMvc.perform(
+    //         delete("/admin/contents/{contentId}", contentId)
+    //             .accept(MediaType.APPLICATION_JSON)
+    //             .header(HttpHeaders.AUTHORIZATION, accessToken)
+    //     )
+    //
+    //     // then
+    //     perform
+    //         .andExpect(status().isOk)
+    //         .andExpect(jsonPath("contentId").value(contentId))
+    //         .andDo(
+    //             document(
+    //                 "content-deleteContent-admin",
+    //                 preprocessRequest(prettyPrint()),
+    //                 preprocessResponse(prettyPrint()),
+    //                 requestHeaders(
+    //                     headerWithName(HttpHeaders.ACCEPT)
+    //                         .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
+    //                     headerWithName(HttpHeaders.AUTHORIZATION)
+    //                         .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
+    //                 ),
+    //                 pathParameters(
+    //                     parameterWithName("contentId").description("삭제할 컨텐츠의 아이디")
+    //                 ),
+    //                 responseFields(
+    //                     fieldWithPath("contentId").description("삭제된 컨텐츠의 아이디")
+    //                 )
+    //             )
+    //         )
+    // }
 }

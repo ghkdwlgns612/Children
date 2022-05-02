@@ -144,14 +144,18 @@ class Content constructor() : BaseTime() {
         return this.lastModifier
     }
 
-    fun setIsDeleted(isDeleted: Boolean) {
+    fun setIsDeletedAndDeletedAt(isDeleted: Boolean, member: Member) {
         this.isDeleted = isDeleted
+        this.setDeletedAt(LocalDateTime.now())
+        this.lastModifier = member
+        setLastModifiedAt(LocalDateTime.now())
     }
 
     fun setImageUrlAndVideoUrlAndUploadStatus(imageUrl: String, videoUrl: String, uploadStatus: UploadStatus) {
         this.imageUrl = imageUrl
         this.videoUrl = videoUrl
         this.uploadStatus = uploadStatus
+        setLastModifiedAt(LocalDateTime.now())
     }
 
     fun setCreateInformation(adminContentCreateRequestDto: AdminContentCreateRequestDto, category: Category, member: Member) {

@@ -146,7 +146,11 @@ class AdminContentController @Autowired constructor(private val contentService: 
     }
 
     @DeleteMapping("/{contentId}")
-    fun deleteContent(@PathVariable contentId: Int): ResponseEntity<AdminContentDeleteResponseDto> {
-        return ResponseEntity.ok().body(AdminContentDeleteResponseDto(contentId))
+    fun deleteContent(
+        @PathVariable contentId: Int,
+        @RequestHeader("Authorization") accessToken: String?
+    ): ResponseEntity<AdminContentDeleteResponseDto> {
+        val member = memberService.getAdminMemberByAccessToken(accessToken)
+        return ResponseEntity.ok().body(contentService.deleteContent(contentId, member))
     }
 }

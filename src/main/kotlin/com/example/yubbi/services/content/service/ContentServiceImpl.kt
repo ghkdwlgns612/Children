@@ -43,8 +43,8 @@ class ContentServiceImpl @Autowired constructor(
         val imageUrl = s3Service.upload(imageFile)
         val videoUrl = s3Service.upload(videoFile)
         content.setImageUrlAndVideoUrlAndUploadStatus(imageUrl, videoUrl, UploadStatus.SUCCESS)
-        val updatedContent = contentRepository.save(content)
-        return AdminContentUploadResponseDto(updatedContent.getContentId(), updatedContent.getUploadStatus())
+
+        return AdminContentUploadResponseDto(content.getContentId(), content.getUploadStatus())
     }
 
     override fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto {
@@ -52,8 +52,7 @@ class ContentServiceImpl @Autowired constructor(
         val category = categoryRepository.findById(adminContentCreateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
 
         content.setCreateInformation(adminContentCreateRequestDto, category, member)
-        val updatedContent = contentRepository.save(content)
-        return makeAdminContentCreateResponseDto(updatedContent)
+        return makeAdminContentCreateResponseDto(content)
     }
 
     override fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto {
@@ -61,12 +60,13 @@ class ContentServiceImpl @Autowired constructor(
         val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
 
         content.setUpdateInformation(adminContentUpdateRequestDto, category, member)
-        val updatedContent = contentRepository.save(content)
-        return makeAdminContentUpdateResponseDto(updatedContent)
+        return makeAdminContentUpdateResponseDto(content)
     }
 
-    override fun deleteContent(contentId: Int): AdminContentDeleteResponseDto {
-        return AdminContentDeleteResponseDto(1)
+    override fun deleteContent(contentId: Int, member: Member): AdminContentDeleteResponseDto {
+        val content = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+        content.setIsDeletedAndDeletedAt(true, member)
+        return AdminContentDeleteResponseDto(content.getContentId()!!)
     }
 
     private fun makeAdminContentCreateResponseDto(content: Content): AdminContentCreateResponseDto {
