@@ -1,6 +1,5 @@
 package com.example.yubbi.services.category.controller
 
-import com.example.yubbi.services.category.controller.dto.response.CategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
 import com.example.yubbi.services.category.service.CategoryService
 import org.springframework.http.ResponseEntity
@@ -15,11 +14,9 @@ class CategoryController(private val categoryService: CategoryService) {
     // TODO : 구현 필요
     @GetMapping
     fun getCategoryList(): ResponseEntity<CategoryListResponseDto> {
-        val categories = listOf(
-            CategoryListOfOneResponseDto(1, "책읽는TV", "책읽는TV 상세설명", 2),
-            CategoryListOfOneResponseDto(2, "영어유치원", "영어유치원 상세설명", 1)
-        )
 
-        return ResponseEntity.ok().body(CategoryListResponseDto(categories))
+        val categoryListResponseDto = categoryService.getActiveCategoryList()
+
+        return ResponseEntity.ok().body(categoryListResponseDto)
     }
 }

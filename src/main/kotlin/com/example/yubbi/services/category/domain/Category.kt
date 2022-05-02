@@ -20,7 +20,7 @@ import javax.persistence.Table
 @Table(name = "category")
 class Category constructor() : BaseTime() {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private val categoryId: Int? = null
 
