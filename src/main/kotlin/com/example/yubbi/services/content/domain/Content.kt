@@ -144,6 +144,10 @@ class Content constructor() : BaseTime() {
         return this.lastModifier
     }
 
+    fun getCategory(): Category? {
+        return this.category
+    }
+
     fun setIsDeletedAndDeletedAt(isDeleted: Boolean, member: Member) {
         this.isDeleted = isDeleted
         this.setDeletedAt(LocalDateTime.now())

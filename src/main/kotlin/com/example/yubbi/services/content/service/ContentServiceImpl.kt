@@ -13,6 +13,7 @@ import com.example.yubbi.services.content.controller.dto.response.AdminContentDe
 import com.example.yubbi.services.content.controller.dto.response.AdminContentListOfOneResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentListResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentModifierResponseDto
+import com.example.yubbi.services.content.controller.dto.response.AdminContentResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentUpdateResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentUploadResponseDto
 import com.example.yubbi.services.content.controller.dto.response.CategoryOfContentResponseDto
@@ -42,6 +43,11 @@ class ContentServiceImpl @Autowired constructor(
     override fun getAdminContentList(categoryId: Int): AdminContentListResponseDto {
         val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
         return makeAdminContentListResponseDto(category.getContentList(), category)
+    }
+
+    override fun getAdminContent(contentId: Int): AdminContentResponseDto {
+        val content = contentRepository.findByIdNotIsDeleted(contentId).orElseThrow()
+        return makeAdminContentResponseDto(content)
     }
 
     override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto {
@@ -152,5 +158,34 @@ class ContentServiceImpl @Autowired constructor(
         } // 카테고리 관련 컨텐츠 중 삭제되지 않았고 업로드 상태가 완료이며 전시 기간의 끝나는 날짜는 현재보다 커야하고 상태는 활성상태인 것만 사용자에게 노출
 
         return ContentListResponseDto(result)
+    }
+
+    private fun makeAdminContentResponseDto(content: Content): AdminContentResponseDto {
+        val category = AdminCategoryOfContentResponseDto(
+            content.getCategory()!!.getCategoryId()!!,
+            content.getCategory()!!.getTitle()!!,
+            content.getCategory()!!.getDescription()!!
+        )
+        val modifier = AdminContentModifierResponseDto(
+            content.getLastModifier()!!.getMemberId()!!,
+            content.getLastModifier()!!.getEmail()!!,
+            content.getLastModifier()!!.getName()!!
+        )
+        return AdminContentResponseDto(
+            content.getContentId()!!,
+            category,
+            content.getTitle()!!,
+            content.getDescription()!!,
+            content.getImageUrl()!!,
+            content.getVideoUrl()!!,
+            content.getActiveStatus()!!,
+            content.getDisplayStartDate()!!,
+            content.getDisplayEndDate()!!,
+            content.getPriority()!!,
+            content.getUploadStatus()!!,
+            content.getCreatedAt()!!,
+            content.getLastModifiedAt()!!,
+            modifier
+        )
     }
 }
