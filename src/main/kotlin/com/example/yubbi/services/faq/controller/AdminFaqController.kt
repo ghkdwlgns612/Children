@@ -85,9 +85,15 @@ class AdminFaqController(
         return ResponseEntity.ok().body(faqService.updateFaq(faqId, adminUpdateRequestDto, adminMember))
     }
 
-    // FAQ삭제 // TODO : 구현 필요
+    // FAQ삭제
     @DeleteMapping("/admin/faqs/{faqId}")
-    fun deleteFaqController(@PathVariable faqId: Int): ResponseEntity<AdminFaqDeleteResponseDto> {
-        return ResponseEntity.ok().body(AdminFaqDeleteResponseDto(faqId))
+    fun deleteFaqController(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?,
+        @PathVariable faqId: Int
+    ): ResponseEntity<AdminFaqDeleteResponseDto> {
+
+        val adminMember = memberService.getAdminMemberByAccessToken(accessToken)
+
+        return ResponseEntity.ok().body(faqService.deleteFaq(faqId, adminMember))
     }
 }

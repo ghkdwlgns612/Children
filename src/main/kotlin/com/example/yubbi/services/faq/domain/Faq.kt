@@ -60,18 +60,17 @@ class Faq constructor() : BaseTime() {
         return this.lastModifier
     }
 
-    fun getIsDeleted(): Boolean? {
-        return this.isDeleted
-    }
-
-    fun setIsDeleted(isDeleted: Boolean) {
-        this.isDeleted = isDeleted
-    }
-
     fun setUpdateInformation(adminFaqUpdateRequestDto: AdminFaqUpdateRequestDto, modifier: Member) {
         this.question = adminFaqUpdateRequestDto.question
         this.answer = adminFaqUpdateRequestDto.answer
         this.lastModifier = modifier
         setLastModifiedAt(LocalDateTime.now())
+    }
+
+    fun setIsDeletedAndDeletedAt(isDeleted: Boolean, modifier: Member) {
+        this.isDeleted = isDeleted
+        this.lastModifier = modifier
+        this.setDeletedAt(LocalDateTime.now())
+        this.setLastModifiedAt(LocalDateTime.now())
     }
 }

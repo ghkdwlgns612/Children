@@ -378,12 +378,12 @@ class AdminFaqControllerTest {
     @DisplayName("FaqId가 주어지고, DELETE방식으로 FAQ를 삭제했을 때, 응답이 200 Ok이고 AdminDeleteResponseDto의 필드가 존재하는지 확인하는 테스트")
     fun deleteFaqAdmin_givenFaqId_whenDeleteDeleteFaq_thenStatusOkAndExistAdminDeleteResponseDto() {
         // given
-        val id = 1
+        val faqId = 1
         val accessToken = "1_ADMIN"
 
         // when
         val perform = mockMvc.perform(
-            delete("/admin/faqs/{faqId}", id)
+            delete("/admin/faqs/{faqId}", faqId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
         )
@@ -393,7 +393,7 @@ class AdminFaqControllerTest {
             .andExpect(jsonPath("faqId").isNumber)
             .andDo(
                 document(
-                    "faq-delete-admin",
+                    "faq-deleteFaq-admin",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestHeaders(
@@ -403,11 +403,38 @@ class AdminFaqControllerTest {
                             .description("인증 정보 헤더 +" + "\n" + "로그인 시 받은 accessToken")
                     ),
                     pathParameters(
-                        parameterWithName("faqId").description("FAQ의 Id")
+                        parameterWithName("faqId").description("삭제할 FAQ의 Id")
                     ),
                     responseFields(
                         fieldWithPath("faqId").description("삭제된 FAQ의 Id")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 FaqId가 주어지고, DELETE방식으로 FAQ를 삭제했을 때, 응답이 404 Not Found인지 확인하는 테스트")
+    fun deleteFaqAdmin_givenNotExistFaqId_whenDeleteDeleteFaq_thenStatusOkAndExistAdminDeleteResponseDto() {
+        // given
+        val notExistFaqId = 100
+        val accessToken = "1_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            delete("/admin/faqs/{faqId}", notExistFaqId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform.andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_FAQ.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_FAQ.message))
+            .andDo(
+                document(
+                    "faq-deleteFaq-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

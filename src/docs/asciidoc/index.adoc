@@ -697,7 +697,7 @@ include::{snippets}/faq-update-admin/curl-request.adoc[]
 include::{snippets}/faq-update-admin/http-response.adoc[]
 
 ===== Error
-====== 1.삭제하려는 FAQ가 존재하지 않는 경우
+====== 1.수정하려는 FAQ가 존재하지 않는 경우
 include::{snippets}/faq-updateFaq-admin-notFound/curl-request.adoc[]
 include::{snippets}/faq-updateFaq-admin-notFound/http-response.adoc[]
 
@@ -707,7 +707,7 @@ include::{snippets}/faq-updateFaq-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminDelete]]
-=== [DELETE][ADMIN] FAQ 삭제 (M)
+=== [DELETE][ADMIN] FAQ 삭제
 ADMIN이 FAQ하나를 삭제할 때 사용될 api
 
 [[resources_faq_adminDelete_request]]
@@ -733,11 +733,11 @@ include::{snippets}/faq-delete-admin/response-fields.adoc[]
 [[resources_faq_adminDelete_sample]]
 ==== Sample
 ===== Success
-include::{snippets}/faq-delete-admin/curl-request.adoc[]
-include::{snippets}/faq-delete-admin/http-response.adoc[]
+include::{snippets}/faq-deleteFaq-admin/curl-request.adoc[]
+include::{snippets}/faq-deleteFaq-admin/http-response.adoc[]
 
 ===== Error
-====== 1.이메일 또는 비밀번호 틀렸을때
+====== 1.삭제하려는 FAQ가 존재하지 않는 경우
 추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+include::{snippets}/faq-deleteFaq-admin-notFound/curl-request.adoc[]
+include::{snippets}/faq-deleteFaq-admin-notFound/http-response.adoc[]
