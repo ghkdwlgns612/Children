@@ -192,4 +192,12 @@ class Content constructor() : BaseTime() {
         this.lastModifier = member
         setLastModifiedAt(LocalDateTime.now())
     }
+
+    fun increasePriority() {
+        this.priority = this.priority!! + 1
+    }
+
+    fun decreasePriority() {
+        this.priority = this.priority!! - 1
+    }
 }

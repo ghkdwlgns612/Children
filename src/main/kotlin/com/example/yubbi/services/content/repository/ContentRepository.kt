@@ -11,4 +11,7 @@ interface ContentRepository : JpaRepository<Content, Int> {
 
     @Query("select c from Content c where c.contentId = :contentId and c.isDeleted = false")
     fun findByIdNotIsDeleted(contentId: Int): Optional<Content>
+
+    @Query("select c from Content c where c.category.categoryId = :categoryId and c.isDeleted = false")
+    fun findAllByCategoryIdAndNotIsDeleted(categoryId: Int): List<Content>
 }

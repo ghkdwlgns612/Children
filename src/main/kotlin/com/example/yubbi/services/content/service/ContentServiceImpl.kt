@@ -72,25 +72,63 @@ class ContentServiceImpl @Autowired constructor(
     }
 
     override fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto {
+        var priority = adminContentCreateRequestDto.priority
+        val category = categoryRepository.findByIdNotIsDeleted(adminContentCreateRequestDto.categoryId).orElseThrow()
         val content = contentRepository.findById(adminContentCreateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
-        val category = categoryRepository.findById(adminContentCreateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
+        val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentCreateRequestDto.categoryId)
 
         content.setCreateInformation(adminContentCreateRequestDto, category, member)
+
+        if (priority > categoryContents.size + 1) {
+            priority = categoryContents.size + 1
+        } else {
+            categoryContents.forEach() {
+                if (priority <= it.getPriority()!!) {
+                    it.increasePriority()
+                }
+            }
+        }
+
         return makeAdminContentCreateResponseDto(content)
     }
 
     override fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto {
         val content = contentRepository.findById(adminContentUpdateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
         val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
+        val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentUpdateRequestDto.categoryId)
+        val oldPriority = content.getPriority()
+        val updatePriority = adminContentUpdateRequestDto.priority
+
+        if (oldPriority!! < updatePriority) {
+            categoryContents.forEach { content ->
+                if (content.getPriority()!! in (oldPriority + 1)..updatePriority) {
+                    content.decreasePriority()
+                }
+            }
+        } else if (oldPriority > updatePriority) {
+            categoryContents.forEach { content ->
+                if (content.getPriority()!! in updatePriority until oldPriority) {
+                    content.increasePriority()
+                }
+            }
+        }
 
         content.setUpdateInformation(adminContentUpdateRequestDto, category, member)
         return makeAdminContentUpdateResponseDto(content)
     }
 
     override fun deleteContent(contentId: Int, member: Member): AdminContentDeleteResponseDto {
-        val content = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
-        content.setIsDeletedAndDeletedAt(true, member)
-        return AdminContentDeleteResponseDto(content.getContentId()!!)
+        val deletedContent = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+        val categoryId = deletedContent.getCategory()!!.getCategoryId()
+        val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(categoryId!!)
+        deletedContent.setIsDeletedAndDeletedAt(true, member)
+
+        categoryContents.forEach() { content ->
+            if (deletedContent.getPriority()!! < content.getPriority()!!) {
+                content.decreasePriority()
+            }
+        }
+        return AdminContentDeleteResponseDto(deletedContent.getContentId()!!)
     }
 
     private fun makeAdminContentCreateResponseDto(content: Content): AdminContentCreateResponseDto {
