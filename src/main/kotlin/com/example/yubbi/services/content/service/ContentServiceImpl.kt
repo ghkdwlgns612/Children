@@ -1,5 +1,7 @@
 package com.example.yubbi.services.content.service
 
+import com.example.yubbi.common.exception.custom.NotFoundCategoryException
+import com.example.yubbi.common.exception.custom.NotFoundContentException
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
 import com.example.yubbi.infra.aws_s3.S3Service
@@ -73,8 +75,8 @@ class ContentServiceImpl @Autowired constructor(
 
     override fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto {
         var priority = adminContentCreateRequestDto.priority
-        val category = categoryRepository.findByIdNotIsDeleted(adminContentCreateRequestDto.categoryId).orElseThrow()
-        val content = contentRepository.findById(adminContentCreateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+        val category = categoryRepository.findByIdNotIsDeleted(adminContentCreateRequestDto.categoryId).orElseThrow { NotFoundCategoryException() }
+        val content = contentRepository.findById(adminContentCreateRequestDto.contentId).orElseThrow { NotFoundContentException() }
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentCreateRequestDto.categoryId)
 
         content.setCreateInformation(adminContentCreateRequestDto, category, member)
@@ -93,8 +95,8 @@ class ContentServiceImpl @Autowired constructor(
     }
 
     override fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto {
-        val content = contentRepository.findById(adminContentUpdateRequestDto.contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
-        val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow() // 카테고리가 없을 경우 예외 발생
+        val content = contentRepository.findById(adminContentUpdateRequestDto.contentId).orElseThrow { NotFoundContentException() }
+        val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow { NotFoundCategoryException() }
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentUpdateRequestDto.categoryId)
         val oldPriority = content.getPriority()
         val updatePriority = adminContentUpdateRequestDto.priority
@@ -118,7 +120,7 @@ class ContentServiceImpl @Autowired constructor(
     }
 
     override fun deleteContent(contentId: Int, member: Member): AdminContentDeleteResponseDto {
-        val deletedContent = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
+        val deletedContent = contentRepository.findById(contentId).orElseThrow { NotFoundContentException() }
         val categoryId = deletedContent.getCategory()!!.getCategoryId()
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(categoryId!!)
         deletedContent.setIsDeletedAndDeletedAt(true, member)

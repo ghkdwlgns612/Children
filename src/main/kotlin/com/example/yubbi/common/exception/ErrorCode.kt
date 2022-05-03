@@ -11,5 +11,6 @@ enum class ErrorCode(
     NOT_FOUND_FAQ(404, "해당 FAQ가 존재하지 않습니다."),
     UNAUTHORIZED(401, "인증이 필요합니다."),
     FORBIDDEN(403, "접근 권한이 없습니다."),
-    BAD_REQUEST(400, "잘못된 요청입니다")
+    BAD_REQUEST(400, "잘못된 요청입니다"),
+    NOT_FOUND_CONTENT(404, "존재하지 않은 컨텐츠입니다.")
 }
