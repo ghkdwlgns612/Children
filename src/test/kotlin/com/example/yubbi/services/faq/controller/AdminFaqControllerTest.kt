@@ -53,7 +53,7 @@ class AdminFaqControllerTest {
         val accessToken = "1_ADMIN"
         val queryParam = LinkedMultiValueMap<String, String>()
         queryParam.add("page", "1")
-        queryParam.add("size", "5")
+        queryParam.add("size", "3")
         queryParam.add("word", "hello")
 
         // when
@@ -91,22 +91,54 @@ class AdminFaqControllerTest {
 
                     ),
                     requestParameters(
-                        parameterWithName("page").description("페이지 넘버"),
-                        parameterWithName("size").description("페이지 당 FAQ갯수"),
-                        parameterWithName("word").description("포함하는 단어")
+                        parameterWithName("page").description("페이지 넘버 (선택) +" + "\n" + "(기본값 1,  1이상의 숫자)"),
+                        parameterWithName("size").description("페이지 당 FAQ갯수 (선택) +" + "\n" + "(기본값 10,  1이상의 숫자)"),
+                        parameterWithName("word").description("검색할 단어 (선택) +" + "\n" + "(질문 또는 답변에 해당 단어가 있으면 검색된다.)")
                     ),
                     responseFields(
-                        fieldWithPath("totalPage").description("Word를 포함하고 있는 FAQ페이지 수"),
-                        fieldWithPath("currentPage").description("현재 선택한 페이지 수"),
-                        fieldWithPath("faqs[0].faqId").description("FAQ의 Id"),
-                        fieldWithPath("faqs[0].question").description("FAQ의 질문"),
-                        fieldWithPath("faqs[0].answer").description("FAQ의 질문에 대한 답변"),
-                        fieldWithPath("faqs[0].createdAt").description("FAQ 작성되어진 시간"),
-                        fieldWithPath("faqs[0].lastModifiedAt").description("최근 FAQ가 수정된 시간"),
-                        fieldWithPath("faqs[0].lastModifier.memberId").description("수정자 Id"),
-                        fieldWithPath("faqs[0].lastModifier.email").description("수정자 이메일"),
-                        fieldWithPath("faqs[0].lastModifier.name").description("수정자 이름")
+                        fieldWithPath("totalPage").description("전체 페이지 수"),
+                        fieldWithPath("currentPage").description("현재 페이지"),
+                        fieldWithPath("faqs[].faqId").description("FAQ의 Id"),
+                        fieldWithPath("faqs[].question").description("FAQ의 질문"),
+                        fieldWithPath("faqs[].answer").description("FAQ의 질문에 대한 답변"),
+                        fieldWithPath("faqs[].createdAt").description("FAQ 작성되어진 시간"),
+                        fieldWithPath("faqs[].lastModifiedAt").description("최근 FAQ가 수정된 시간"),
+                        fieldWithPath("faqs[].lastModifier.memberId").description("수정자 Id"),
+                        fieldWithPath("faqs[].lastModifier.email").description("수정자 이메일"),
+                        fieldWithPath("faqs[].lastModifier.name").description("수정자 이름")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("잘못된 페이지.사이즈.단어.액세스토큰이 주어지고, GET방식으로 FAQ리스트를 조회했을 때, 응답이 400 BadRequest인지 확인하는 테스트")
+    fun getFaqList_givenWrongPageAndSizeAndWordAndToken_whenGetFaqList_thenStatusOkAndExistAdminFaqListResponseDto() {
+        // given
+        val accessToken = "1_ADMIN"
+        val queryParam = LinkedMultiValueMap<String, String>()
+        queryParam.add("page", "-1")
+        queryParam.add("size", "3")
+        queryParam.add("word", "hello")
+
+        // when
+        val perform = mockMvc.perform(
+            get("/admin/faqs")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .params(queryParam)
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "faq-getFaqList-admin-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

@@ -4,7 +4,6 @@ import com.example.yubbi.services.faq.controller.dto.request.AdminFaqCreateReque
 import com.example.yubbi.services.faq.controller.dto.request.AdminFaqUpdateRequestDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqCreateResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqDeleteResponseDto
-import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqResponseDto
@@ -24,36 +23,27 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import javax.validation.constraints.Min
 
+@Validated
 @RestController
 class AdminFaqController(
     private val faqService: FaqService,
     private val memberService: MemberService
 ) {
 
-    // FAQ목록조회 // TODO : 구현 필요
+    // FAQ목록조회
     @GetMapping("/admin/faqs")
     fun getFaqListController(
-        @RequestParam page: Int,
-        @RequestParam size: Int?,
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?,
+        @Min(1) @RequestParam(defaultValue = "1") page: Int,
+        @Min(1) @RequestParam(defaultValue = "10") size: Int,
         @RequestParam word: String?
     ): ResponseEntity<AdminFaqListResponseDto> {
-        val faq1 = AdminFaqListOfOneResponseDto(
-            1, "question1", "answer1",
-            LocalDateTime.now(), LocalDateTime.now(), AdminFaqModifierResponseDto(1, "email1", "name1")
-        )
-        val faq2 = AdminFaqListOfOneResponseDto(
-            2, "question2", "answer2",
-            LocalDateTime.now(), LocalDateTime.now(), AdminFaqModifierResponseDto(2, "email2", "name2")
-        )
-        val faq3 = AdminFaqListOfOneResponseDto(
-            3, "question3", "answer3",
-            LocalDateTime.now(), LocalDateTime.now(), AdminFaqModifierResponseDto(3, "email3", "name3")
-        )
 
-        val faqList = listOf(faq1, faq2, faq3)
+        memberService.getAdminMemberByAccessToken(accessToken)
 
-        return ResponseEntity.ok().body(AdminFaqListResponseDto(100, page, faqList))
+        return ResponseEntity.ok().body(faqService.getAdminFaqList(page, size, word))
     }
 
     // FAQ단건조회 // TODO : 구현 필요

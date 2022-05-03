@@ -555,7 +555,7 @@ include::{snippets}/faq-getFaqList-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_getList_admin]]
-=== [GET][ADMIN] FAQ 목록 조회 (M)
+=== [GET][ADMIN] FAQ 목록 조회
 ADMIN이 FAQ리스트를 조회할 때 사용될 api
 
 [[resources_faq_getList_admin_request]]
@@ -585,10 +585,9 @@ include::{snippets}/faq-getFaqList-admin/curl-request.adoc[]
 include::{snippets}/faq-getFaqList-admin/http-response.adoc[]
 
 ===== Error
-====== 1.이메일 또는 비밀번호 틀렸을때
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.요청이 잘못된 경우(page 또는 size에 1미만의 값이 들어간 경우)
+include::{snippets}/faq-getFaqList-admin-badRequest/curl-request.adoc[]
+include::{snippets}/faq-getFaqList-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminGet]]

@@ -2,6 +2,9 @@ package com.example.yubbi.services.faq.service
 
 import com.example.yubbi.services.faq.controller.dto.request.AdminFaqCreateRequestDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqCreateResponseDto
+import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListOfOneResponseDto
+import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListResponseDto
+import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListResponseDto
 import com.example.yubbi.services.faq.domain.Faq
@@ -36,6 +39,36 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
         }.toList()
 
         return FaqListResponseDto(pageOfFaqs.totalPages, page, faqListOfOneResponseDto)
+    }
+
+    override fun getAdminFaqList(page: Int, size: Int, word: String?): AdminFaqListResponseDto {
+        val pageRequest = PageRequest.of(page - 1, size, Sort.Direction.ASC, "faqId")
+
+        val pageOfFaqs = if (word == null) {
+            faqRepository.getPageOfFaqs(pageRequest)
+        } else {
+            faqRepository.getPageOfFaqsWithWord(pageRequest, word)
+        }
+
+        val adminFaqListOfOneResponseDto = pageOfFaqs.map { faq ->
+
+            val lastModifier = faq.getLastModifier()!!
+
+            AdminFaqListOfOneResponseDto(
+                faq.getFaqId()!!,
+                faq.getQuestion()!!,
+                faq.getAnswer()!!,
+                faq.getCreatedAt()!!,
+                faq.getLastModifiedAt()!!,
+                AdminFaqModifierResponseDto(
+                    lastModifier.getMemberId()!!,
+                    lastModifier.getEmail()!!,
+                    lastModifier.getName()!!
+                )
+            )
+        }.toList()
+
+        return AdminFaqListResponseDto(pageOfFaqs.totalPages, page, adminFaqListOfOneResponseDto)
     }
 
     override fun createFaq(adminFaqCreateRequestDto: AdminFaqCreateRequestDto, creator: Member): AdminFaqCreateResponseDto {

@@ -33,11 +33,11 @@ values(5, '삭제된카테고리', '삭제된카테고리 상세설명', 'ACTIVE
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
 values(1, '1번째 질문입니다. hello world', '1번째 답변입니다.', now(), now(), 1, null, false);
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
-values(2, '2번째 질문입니다.', '2번째 답변입니다. hello world ', now(), now(), 2, null, false);
+values(2, '2번째 질문입니다.', '2번째 답변입니다. hello world ', now(), now(), 3, null, false);
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
-values(3, '3번째 질문입니다.', '3번째 hello world 답변입니다.', now(), now(), 2, null, false);
+values(3, '3번째 질문입니다.', '3번째 hello world 답변입니다.', now(), now(), 3, null, false);
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
-values(4, '4번째 질문입니다.', '4번째 답변입니다.', now(), now(), 2, null, false);
+values(4, '4번째 질문입니다.', '4번째 답변입니다.', now(), now(), 3, null, false);
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
 values(5, '5번째 질문입니다.', '5번째 답변입니다.', now(), now(), 1, null, false);
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
