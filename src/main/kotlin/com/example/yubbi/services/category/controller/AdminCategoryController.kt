@@ -5,7 +5,6 @@ import com.example.yubbi.services.category.controller.dto.request.AdminCategoryC
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryCreateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryDeleteResponseDto
-import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryModifierResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryResponseDto
@@ -33,44 +32,12 @@ class AdminCategoryController(
     private val memberService: MemberService
 ) {
 
-    // TODO : 구현 필요
     @GetMapping
-    fun getCategoryList(): ResponseEntity<AdminCategoryListResponseDto> {
+    fun getCategoryList(@RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?): ResponseEntity<AdminCategoryListResponseDto> {
 
-        val categories = listOf(
-            AdminCategoryListOfOneResponseDto(
-                1,
-                "책읽는TV",
-                "책읽는TV 상세설명",
-                ActiveStatus.ACTIVE,
-                2,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminCategoryModifierResponseDto(1, "admin@email.com", "admin")
-            ),
-            AdminCategoryListOfOneResponseDto(
-                2,
-                "영어유치원",
-                "영어유치원 상세설명",
-                ActiveStatus.ACTIVE,
-                1,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminCategoryModifierResponseDto(1, "admin@email.com", "admin")
-            ),
-            AdminCategoryListOfOneResponseDto(
-                3,
-                "누리학습",
-                "누리학습 상세설명",
-                ActiveStatus.IN_ACTIVE,
-                3,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminCategoryModifierResponseDto(1, "admin@email.com", "admin")
-            )
-        )
+        memberService.getAdminMemberByAccessToken(accessToken)
 
-        return ResponseEntity.ok().body(AdminCategoryListResponseDto(categories))
+        return ResponseEntity.ok().body(categoryService.getAdminCategoryList())
     }
 
     // TODO : 구현 필요

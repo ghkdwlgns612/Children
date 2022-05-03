@@ -5,6 +5,9 @@ import com.example.yubbi.services.category.controller.dto.request.AdminCategoryC
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryCreateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryDeleteResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListOfOneResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryModifierResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
@@ -19,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : CategoryService {
 
     @Transactional(readOnly = true)
-    override fun getActiveCategoryList(): CategoryListResponseDto {
+    override fun getCategoryList(): CategoryListResponseDto {
 
         val findAll = categoryRepository.findActiveCategories()
 
@@ -33,6 +36,33 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         }.toList()
 
         return CategoryListResponseDto(categoryListOfOneResponseDtoList)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAdminCategoryList(): AdminCategoryListResponseDto {
+        val categoryList = categoryRepository.findAllNotIsDeleted()
+
+        val adminCategoryListOfOneResponseDto = categoryList.map { category ->
+
+            val lastModifier = category.getLastModifier()!!
+
+            AdminCategoryListOfOneResponseDto(
+                category.getCategoryId()!!,
+                category.getTitle()!!,
+                category.getDescription()!!,
+                category.getActiveStatus()!!,
+                category.getPriority()!!,
+                category.getCreatedAt()!!,
+                category.getLastModifiedAt()!!,
+                AdminCategoryModifierResponseDto(
+                    lastModifier.getMemberId()!!,
+                    lastModifier.getEmail()!!,
+                    lastModifier.getName()!!
+                )
+            )
+        }.toList()
+
+        return AdminCategoryListResponseDto(adminCategoryListOfOneResponseDto)
     }
 
     override fun createCategory(adminCategoryCreateRequestDto: AdminCategoryCreateRequestDto, creator: Member): AdminCategoryCreateResponseDto {

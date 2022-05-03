@@ -94,7 +94,7 @@ include::{snippets}/category-getCategoryList/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminGetList]]
-=== [GET][ADMIN] Category 목록 조회 (M)
+=== [GET][ADMIN] Category 목록 조회
 관리자용 카테고리 목록 조회에 사용할 api +
 (활성상태와 상관없이 모든 카테고리 목록을 조회한다.)
 
