@@ -53,3 +53,26 @@ values(10, '10번째 질문입니다. hello', '10번째 답변입니다.', now()
 
 insert into faq(faq_id, question, answer, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
 values(11, '11번째 질문입니다.(삭제된 질문)', '11번째 답변입니다.(삭제된 답변)', now(), now(), 1, now(), true);
+
+
+------------------------------------------------------------------------------------------------------------------------
+-- content 초기값
+------------------------------------------------------------------------------------------------------------------------
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(1,'title1','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), now(),1,'SUCCESS',1,1,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(2,'title2','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), now(),2,'FAIL',3,1,now(),now(),true,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(3,'title3','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','IN_ACTIVE',now(), now(),3,'SUCCESS',1,1,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(4,'title4','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','IN_ACTIVE',now(), now(),4,'SUCCESS',1,1,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(5,'title5','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), "2022-10-01 09:00:00",5,'SUCCESS',1,1,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(6,'title6','category1','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), "2022-10-01 09:00:00",6,'SUCCESS',1,1,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(7,'title7','category2','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), now(),6,'SUCCESS',1,2,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(8,'title8','category2','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','IN_ACTIVE',now(), now(),6,'SUCCESS',3,2,now(),null,false,now());
+insert into content(content_id, title, description, image_url, video_url, active_status, display_start_date, display_end_date, priority, upload_status, last_modifier, category_id, last_modified_at, deleted_at, is_deleted, created_at)
+values(9,'title9','category2','https://image.yes24.com/goods/68746076/XL','https://youtu.be/PQrfV_CtmP8','ACTIVE',now(), now(),6,'SUCCESS',1,2,now(),null,false,now());

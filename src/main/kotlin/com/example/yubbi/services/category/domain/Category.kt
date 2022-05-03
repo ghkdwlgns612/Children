@@ -3,6 +3,7 @@ package com.example.yubbi.services.category.domain
 import com.example.yubbi.common.domain.BaseTime
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
+import com.example.yubbi.services.content.domain.Content
 import com.example.yubbi.services.member.domain.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
@@ -15,6 +16,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
@@ -44,6 +46,9 @@ class Category constructor() : BaseTime() {
 
     @Column(name = "is_deleted")
     private var isDeleted: Boolean? = false
+
+    @OneToMany(mappedBy = "category")
+    private var contents: MutableList<Content> = arrayListOf()
 
     constructor(title: String, description: String, activeStatus: ActiveStatus, priority: Int, lastModifier: Member) : this() {
         this.title = title
@@ -82,6 +87,10 @@ class Category constructor() : BaseTime() {
 
     fun getIsDeleted(): Boolean? {
         return this.isDeleted
+    }
+
+    fun getContentList(): MutableList<Content>? {
+        return this.contents
     }
 
     fun setIsDeleted(isDeleted: Boolean) {
