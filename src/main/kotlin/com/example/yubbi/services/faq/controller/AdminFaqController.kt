@@ -5,7 +5,6 @@ import com.example.yubbi.services.faq.controller.dto.request.AdminFaqUpdateReque
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqCreateResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqDeleteResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListResponseDto
-import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqUpdateResponseDto
 import com.example.yubbi.services.faq.service.FaqService
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 import javax.validation.constraints.Min
 
 @Validated
@@ -46,17 +44,16 @@ class AdminFaqController(
         return ResponseEntity.ok().body(faqService.getAdminFaqList(page, size, word))
     }
 
-    // FAQ단건조회 // TODO : 구현 필요
+    // FAQ단건조회
     @GetMapping("/admin/faqs/{faqId}")
-    fun getFaqController(@PathVariable faqId: Int): ResponseEntity<AdminFaqResponseDto> {
-        val modifier = AdminFaqModifierResponseDto(1, "email", "name")
+    fun getFaqController(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?,
+        @PathVariable faqId: Int
+    ): ResponseEntity<AdminFaqResponseDto> {
 
-        return ResponseEntity.ok().body(
-            AdminFaqResponseDto(
-                faqId, "question", "answer",
-                LocalDateTime.now(), LocalDateTime.now(), modifier
-            )
-        )
+        memberService.getAdminMemberByAccessToken(accessToken)
+
+        return ResponseEntity.ok().body(faqService.getAdminFaq(faqId))
     }
 
     // FAQ등록

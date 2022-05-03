@@ -8,6 +8,7 @@ import com.example.yubbi.services.faq.controller.dto.response.AdminFaqDeleteResp
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
+import com.example.yubbi.services.faq.controller.dto.response.AdminFaqResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqUpdateResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListResponseDto
@@ -45,6 +46,7 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
         return FaqListResponseDto(pageOfFaqs.totalPages, page, faqListOfOneResponseDto)
     }
 
+    @Transactional(readOnly = true)
     override fun getAdminFaqList(page: Int, size: Int, word: String?): AdminFaqListResponseDto {
         val pageRequest = PageRequest.of(page - 1, size, Sort.Direction.ASC, "faqId")
 
@@ -73,6 +75,26 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
         }.toList()
 
         return AdminFaqListResponseDto(pageOfFaqs.totalPages, page, adminFaqListOfOneResponseDto)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAdminFaq(faqId: Int): AdminFaqResponseDto {
+        val faq = faqRepository.findByIdNotIsDeleted(faqId).orElseThrow { NotFoundFaqException() }
+
+        val lastModifier = faq.getLastModifier()!!
+
+        return AdminFaqResponseDto(
+            faq.getFaqId()!!,
+            faq.getQuestion()!!,
+            faq.getAnswer()!!,
+            faq.getCreatedAt()!!,
+            faq.getLastModifiedAt()!!,
+            AdminFaqModifierResponseDto(
+                lastModifier.getMemberId()!!,
+                lastModifier.getEmail()!!,
+                lastModifier.getName()!!
+            )
+        )
     }
 
     override fun createFaq(adminFaqCreateRequestDto: AdminFaqCreateRequestDto, creator: Member): AdminFaqCreateResponseDto {

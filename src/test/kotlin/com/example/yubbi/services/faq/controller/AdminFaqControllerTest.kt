@@ -196,6 +196,33 @@ class AdminFaqControllerTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 FaqId와 토큰이 주어지고, GET방식으로 FAQ를 조회했을 때, 응답이 404 Not Found인지 확인하는 테스트")
+    fun getFaq_givenNotExistFaqId_whenGetFaq_thenStatusOkAndExistAdminFaqResponseDto() {
+        // given
+        val notExistFaqId = 100
+        val accessToken = "1_ADMIN"
+        // when
+        val perform = mockMvc.perform(
+            get("/admin/faqs/{faqId}", notExistFaqId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_FAQ.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_FAQ.message))
+            .andDo(
+                document(
+                    "faq-getFaq-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
     @DisplayName("AdminCreateRequestDto가 주어지고, POST방식으로 FAQ를 생성했을 때, 응답이 200 Ok이고 AdminCreateResponseDto의 필드가 존재하는지 확인하는 테스트")
     fun createFaq_givenAdminCreateRequestDto_whenPostCreateFaq_thenStatusOkAndExistAdminCreateResponseDto() {
         // given
