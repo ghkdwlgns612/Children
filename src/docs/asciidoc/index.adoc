@@ -664,7 +664,7 @@ include::{snippets}/faq-createFaq-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminUpdate]]
-=== [PUT][ADMIN] FAQ 수정 (M)
+=== [PUT][ADMIN] FAQ 수정
 ADMIN이 FAQ하나를 수정할 때 사용될 api
 
 [[resources_faq_adminUpdate_request]]
@@ -697,10 +697,13 @@ include::{snippets}/faq-update-admin/curl-request.adoc[]
 include::{snippets}/faq-update-admin/http-response.adoc[]
 
 ===== Error
-====== 1.이메일 또는 비밀번호 틀렸을때
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.삭제하려는 FAQ가 존재하지 않는 경우
+include::{snippets}/faq-updateFaq-admin-notFound/curl-request.adoc[]
+include::{snippets}/faq-updateFaq-admin-notFound/http-response.adoc[]
+
+====== 2.요청이 잘못된 경우 (필수값 누락 또는 잘못된 값 포함)
+include::{snippets}/faq-updateFaq-admin-badRequest/curl-request.adoc[]
+include::{snippets}/faq-updateFaq-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_faq_adminDelete]]

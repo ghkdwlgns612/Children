@@ -269,7 +269,7 @@ class AdminFaqControllerTest {
 
     @Test
     @DisplayName("AdminUpdateRequestDto가 주어지고, PUT방식으로 FAQ를 수정했을 때, 응답이 200 Ok이고 AdminUpdateResponseDto의 필드가 존재하는지 확인하는 테스트")
-    fun updateFaqAdmin_givenFaqIdAndAdminUpdateRequestDto_whenPutUpdateFaq_thenStatusOkAndExistAdminUpdateResponseDto() {
+    fun updateFaq_givenFaqIdAndAdminUpdateRequestDto_whenPutUpdateFaq_thenStatusOkAndExistAdminUpdateResponseDto() {
         // given
         val request = AdminFaqUpdateRequestDto("question", "answer")
         val id = 1
@@ -301,8 +301,8 @@ class AdminFaqControllerTest {
                             .description("인증 정보 헤더 +" + "\n" + "로그인 시 받은 accessToken")
                     ),
                     requestFields(
-                        fieldWithPath("question").description("수정할 FAQ 질문"),
-                        fieldWithPath("answer").description("수정할 FAQ 질문에 대한 답변")
+                        fieldWithPath("question").description("수정할 FAQ의 질문 (필수)"),
+                        fieldWithPath("answer").description("수정할 FAQ의 답변 (필수)")
                     ),
                     pathParameters(
                         parameterWithName("faqId").description("FAQ의 Id")
@@ -310,6 +310,66 @@ class AdminFaqControllerTest {
                     responseFields(
                         fieldWithPath("faqId").description("수정되어진 FAQ의 Id")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 faqId와 AdminUpdateRequestDto가 주어지고, PUT방식으로 FAQ를 수정했을 때, 응답이 404 NotFound인지 확인하는 테스트")
+    fun updateFaq_givenNotExistFaqIdAndAdminUpdateRequestDto_whenPutUpdateFaq_thenStatusBadRequest() {
+        // given
+        val wrongAdminFaqUpdateRequestDto = AdminFaqUpdateRequestDto("question", "answer")
+        val id = 100
+        val accessToken = "1_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            put("/admin/faqs/{faqId}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(wrongAdminFaqUpdateRequestDto))
+        )
+
+        // then
+        perform.andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_FAQ.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_FAQ.message))
+            .andDo(
+                document(
+                    "faq-updateFaq-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("수정할 faqId와 잘못된 AdminUpdateRequestDto가 주어지고, PUT방식으로 FAQ를 수정했을 때, 응답이 400 BadRequest인지 확인하는 테스트")
+    fun updateFaq_givenFaqIdAndWrongAdminUpdateRequestDto_whenPutUpdateFaq_thenStatusBadRequest() {
+        // given
+        val wrongAdminFaqUpdateRequestDto = AdminFaqUpdateRequestDto("", "answer")
+        val id = 1
+        val accessToken = "1_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            put("/admin/faqs/{faqId}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(wrongAdminFaqUpdateRequestDto))
+        )
+
+        // then
+        perform.andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "faq-updateFaq-admin-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

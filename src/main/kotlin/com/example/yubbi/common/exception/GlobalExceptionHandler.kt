@@ -2,6 +2,7 @@ package com.example.yubbi.common.exception
 
 import com.example.yubbi.common.exception.custom.ForbiddenException
 import com.example.yubbi.common.exception.custom.NotFoundCategoryException
+import com.example.yubbi.common.exception.custom.NotFoundFaqException
 import com.example.yubbi.common.exception.custom.NotFoundMemberException
 import com.example.yubbi.common.exception.custom.NotMatchPasswordException
 import com.example.yubbi.common.exception.custom.UnAuthorizedException
@@ -45,6 +46,11 @@ class GlobalExceptionHandler {
     @ExceptionHandler(value = [NotFoundCategoryException::class])
     fun notFoundCategoryExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ErrorCode.NOT_FOUND_CATEGORY))
+    }
+
+    @ExceptionHandler(value = [NotFoundFaqException::class])
+    fun notFoundFaqExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ErrorCode.NOT_FOUND_FAQ))
     }
 
     @ExceptionHandler(value = [UnAuthorizedException::class])

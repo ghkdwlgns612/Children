@@ -1,10 +1,13 @@
 package com.example.yubbi.services.faq.service
 
+import com.example.yubbi.common.exception.custom.NotFoundFaqException
 import com.example.yubbi.services.faq.controller.dto.request.AdminFaqCreateRequestDto
+import com.example.yubbi.services.faq.controller.dto.request.AdminFaqUpdateRequestDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqCreateResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqListResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.AdminFaqModifierResponseDto
+import com.example.yubbi.services.faq.controller.dto.response.AdminFaqUpdateResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListOfOneResponseDto
 import com.example.yubbi.services.faq.controller.dto.response.FaqListResponseDto
 import com.example.yubbi.services.faq.domain.Faq
@@ -82,5 +85,12 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
         val createdFaq = faqRepository.save(faq)
 
         return AdminFaqCreateResponseDto(createdFaq.getFaqId()!!)
+    }
+
+    override fun updateFaq(faqId: Int, adminFaqUpdateRequestDto: AdminFaqUpdateRequestDto, modifier: Member): AdminFaqUpdateResponseDto {
+        val faq = faqRepository.findByIdNotIsDeleted(faqId).orElseThrow { NotFoundFaqException() }
+
+        faq.setUpdateInformation(adminFaqUpdateRequestDto, modifier)
+        return AdminFaqUpdateResponseDto(faq.getFaqId()!!)
     }
 }

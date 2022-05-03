@@ -1,6 +1,7 @@
 package com.example.yubbi.services.faq.domain
 
 import com.example.yubbi.common.domain.BaseTime
+import com.example.yubbi.services.faq.controller.dto.request.AdminFaqUpdateRequestDto
 import com.example.yubbi.services.member.domain.Member
 import java.time.LocalDateTime
 import javax.persistence.Column
@@ -65,5 +66,12 @@ class Faq constructor() : BaseTime() {
 
     fun setIsDeleted(isDeleted: Boolean) {
         this.isDeleted = isDeleted
+    }
+
+    fun setUpdateInformation(adminFaqUpdateRequestDto: AdminFaqUpdateRequestDto, modifier: Member) {
+        this.question = adminFaqUpdateRequestDto.question
+        this.answer = adminFaqUpdateRequestDto.answer
+        this.lastModifier = modifier
+        setLastModifiedAt(LocalDateTime.now())
     }
 }

@@ -72,13 +72,17 @@ class AdminFaqController(
         return ResponseEntity.ok().body(adminFaqCreateResponseDto)
     }
 
-    // FAQ수정 // TODO : 구현 필요
+    // FAQ수정
     @PutMapping("/admin/faqs/{faqId}")
-    fun updateFaqController(
-        @RequestBody adminUpdateRequestDto: AdminFaqUpdateRequestDto,
+    fun updateFaq(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?,
+        @Validated @RequestBody adminUpdateRequestDto: AdminFaqUpdateRequestDto,
         @PathVariable faqId: Int
     ): ResponseEntity<AdminFaqUpdateResponseDto> {
-        return ResponseEntity.ok().body(AdminFaqUpdateResponseDto(faqId))
+
+        val adminMember = memberService.getAdminMemberByAccessToken(accessToken)
+
+        return ResponseEntity.ok().body(faqService.updateFaq(faqId, adminUpdateRequestDto, adminMember))
     }
 
     // FAQ삭제 // TODO : 구현 필요
