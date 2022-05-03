@@ -7,8 +7,12 @@ import com.example.yubbi.services.category.domain.Category
 import com.example.yubbi.services.category.repository.CategoryRepository
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
 import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
+import com.example.yubbi.services.content.controller.dto.response.AdminCategoryOfContentResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentCreateResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentDeleteResponseDto
+import com.example.yubbi.services.content.controller.dto.response.AdminContentListOfOneResponseDto
+import com.example.yubbi.services.content.controller.dto.response.AdminContentListResponseDto
+import com.example.yubbi.services.content.controller.dto.response.AdminContentModifierResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentUpdateResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentUploadResponseDto
 import com.example.yubbi.services.content.controller.dto.response.CategoryOfContentResponseDto
@@ -35,29 +39,9 @@ class ContentServiceImpl @Autowired constructor(
         return makeContentListResponseDto(category.getContentList(), category)
     }
 
-    private fun makeContentListResponseDto(contents: MutableList<Content>?, category: Category): ContentListResponseDto {
-        val result = arrayListOf<ContentListOfOneResponseDto>()
-        val categoryResponse = CategoryOfContentResponseDto(category.getCategoryId()!!, category.getTitle()!!, category.getDescription()!!)
-
-        for (content in contents!!) {
-            if (content.getIsDeleted() == false && content.getUploadStatus() == UploadStatus.SUCCESS &&
-                content.getDisplayEndDate()!! > LocalDateTime.now() && content.getActiveStatus() == ActiveStatus.ACTIVE
-            ) {
-                result.add(
-                    ContentListOfOneResponseDto(
-                        content.getContentId()!!,
-                        categoryResponse,
-                        content.getTitle()!!,
-                        content.getDescription()!!,
-                        content.getImageUrl()!!,
-                        content.getVideoUrl()!!,
-                        content.getPriority()!!
-                    )
-                )
-            }
-        } // 카테고리 관련 컨텐츠 중 삭제되지 않았고 업로드 상태가 완료이며 전시 기간의 끝나는 날짜는 현재보다 커야하고 상태는 활성상태인 것만 사용자에게 노출
-
-        return ContentListResponseDto(result)
+    override fun getAdminContentList(categoryId: Int): AdminContentListResponseDto {
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
+        return makeAdminContentListResponseDto(category.getContentList(), category)
     }
 
     override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto {
@@ -109,5 +93,64 @@ class ContentServiceImpl @Autowired constructor(
 
     private fun makeAdminContentUpdateResponseDto(content: Content): AdminContentUpdateResponseDto {
         return AdminContentUpdateResponseDto(content.getContentId()!!)
+    }
+
+    private fun makeAdminContentListResponseDto(contents: MutableList<Content>?, category: Category): AdminContentListResponseDto {
+        val result = arrayListOf<AdminContentListOfOneResponseDto>()
+        val categoryResponse = AdminCategoryOfContentResponseDto(category.getCategoryId()!!, category.getTitle()!!, category.getDescription()!!)
+
+        for (content in contents!!) {
+            val modifier = AdminContentModifierResponseDto(
+                content.getLastModifier()!!.getMemberId()!!,
+                content.getLastModifier()!!.getEmail()!!,
+                content.getLastModifier()!!.getName()!!
+            )
+            if (content.getIsDeleted() == false && content.getUploadStatus() == UploadStatus.SUCCESS) {
+                result.add(
+                    AdminContentListOfOneResponseDto(
+                        content.getContentId()!!,
+                        categoryResponse,
+                        content.getTitle()!!,
+                        content.getDescription()!!,
+                        content.getImageUrl()!!,
+                        content.getVideoUrl()!!,
+                        content.getActiveStatus()!!,
+                        content.getDisplayStartDate()!!,
+                        content.getDisplayEndDate()!!,
+                        content.getPriority()!!,
+                        content.getUploadStatus()!!,
+                        content.getCreatedAt()!!,
+                        content.getLastModifiedAt()!!,
+                        modifier
+                    )
+                )
+            }
+        }
+        return AdminContentListResponseDto(result)
+    }
+
+    private fun makeContentListResponseDto(contents: MutableList<Content>?, category: Category): ContentListResponseDto {
+        val result = arrayListOf<ContentListOfOneResponseDto>()
+        val categoryResponse = CategoryOfContentResponseDto(category.getCategoryId()!!, category.getTitle()!!, category.getDescription()!!)
+
+        for (content in contents!!) {
+            if (content.getIsDeleted() == false && content.getUploadStatus() == UploadStatus.SUCCESS &&
+                content.getDisplayEndDate()!! > LocalDateTime.now() && content.getActiveStatus() == ActiveStatus.ACTIVE
+            ) {
+                result.add(
+                    ContentListOfOneResponseDto(
+                        content.getContentId()!!,
+                        categoryResponse,
+                        content.getTitle()!!,
+                        content.getDescription()!!,
+                        content.getImageUrl()!!,
+                        content.getVideoUrl()!!,
+                        content.getPriority()!!
+                    )
+                )
+            }
+        } // 카테고리 관련 컨텐츠 중 삭제되지 않았고 업로드 상태가 완료이며 전시 기간의 끝나는 날짜는 현재보다 커야하고 상태는 활성상태인 것만 사용자에게 노출
+
+        return ContentListResponseDto(result)
     }
 }

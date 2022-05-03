@@ -7,7 +7,6 @@ import com.example.yubbi.services.content.controller.dto.request.AdminContentUpd
 import com.example.yubbi.services.content.controller.dto.response.AdminCategoryOfContentResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentCreateResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentDeleteResponseDto
-import com.example.yubbi.services.content.controller.dto.response.AdminContentListOfOneResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentListResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentModifierResponseDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentResponseDto
@@ -37,60 +36,12 @@ import java.time.LocalDateTime
 class AdminContentController @Autowired constructor(private val contentService: ContentService, private val memberService: MemberService) {
 
     @GetMapping
-    fun getContentList(@RequestParam(required = false) categoryId: Int?): ResponseEntity<AdminContentListResponseDto> {
-
-        val contents = listOf(
-            AdminContentListOfOneResponseDto(
-                1,
-                AdminCategoryOfContentResponseDto(1, "책읽는TV", "책읽는TV 상세설명"),
-                "웃음이 퐁퐁퐁",
-                "웃음이 퐁퐁퐁 상세설명",
-                "https://image.yes24.com/goods/68746076/XL",
-                "https://youtu.be/PQrfV_CtmP8",
-                ActiveStatus.ACTIVE,
-                LocalDateTime.of(2022, 4, 1, 12, 0, 0),
-                LocalDateTime.of(2022, 6, 1, 12, 0, 0),
-                1,
-                UploadStatus.SUCCESS,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminContentModifierResponseDto(1, "admin@email.com", "admin")
-            ),
-            AdminContentListOfOneResponseDto(
-                2,
-                AdminCategoryOfContentResponseDto(1, "책읽는TV", "책읽는TV 상세설명"),
-                "다도와 로봇센터",
-                "다도와 로봇센터 상세설명",
-                "https://www.greatbooks.co.kr/image/groupbook/4030",
-                "https://youtu.be/QuW4aRgFhPQ",
-                ActiveStatus.ACTIVE,
-                LocalDateTime.of(2022, 4, 1, 12, 0, 0),
-                LocalDateTime.of(2022, 6, 1, 12, 0, 0),
-                2,
-                UploadStatus.SUCCESS,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminContentModifierResponseDto(1, "admin@email.com", "admin")
-            ),
-            AdminContentListOfOneResponseDto(
-                3,
-                AdminCategoryOfContentResponseDto(1, "책읽는TV", "책읽는TV 상세설명"),
-                "고릴라 코딱지",
-                "고릴라 코딱지 상세설명",
-                "https://image.yes24.com/momo/TopCate341/MidCate009/34081751.jpg",
-                "https://youtu.be/SRc9Dnj8oc8",
-                ActiveStatus.ACTIVE,
-                LocalDateTime.of(2022, 4, 1, 12, 0, 0),
-                LocalDateTime.of(2022, 6, 1, 12, 0, 0),
-                3,
-                UploadStatus.SUCCESS,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                AdminContentModifierResponseDto(1, "admin@email.com", "admin")
-            )
-        )
-
-        return ResponseEntity.ok().body(AdminContentListResponseDto(contents))
+    fun getContentList(
+        @RequestParam categoryId: Int,
+        @RequestHeader("Authorization") accessToken: String?
+    ): ResponseEntity<AdminContentListResponseDto> {
+        memberService.getAdminMemberByAccessToken(accessToken)
+        return ResponseEntity.ok().body(contentService.getAdminContentList(categoryId))
     }
 
     @GetMapping("/{contentId}")
