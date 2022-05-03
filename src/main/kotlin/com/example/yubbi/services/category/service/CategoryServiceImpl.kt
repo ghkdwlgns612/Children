@@ -8,6 +8,7 @@ import com.example.yubbi.services.category.controller.dto.response.AdminCategory
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryModifierResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
@@ -63,6 +64,27 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         }.toList()
 
         return AdminCategoryListResponseDto(adminCategoryListOfOneResponseDto)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAdminCategory(categoryId: Int): AdminCategoryResponseDto {
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
+        val lastModifier = category.getLastModifier()!!
+
+        return AdminCategoryResponseDto(
+            category.getCategoryId()!!,
+            category.getTitle()!!,
+            category.getDescription()!!,
+            category.getActiveStatus()!!,
+            category.getPriority()!!,
+            category.getCreatedAt()!!,
+            category.getLastModifiedAt()!!,
+            AdminCategoryModifierResponseDto(
+                lastModifier.getMemberId()!!,
+                lastModifier.getEmail()!!,
+                lastModifier.getName()!!
+            )
+        )
     }
 
     override fun createCategory(adminCategoryCreateRequestDto: AdminCategoryCreateRequestDto, creator: Member): AdminCategoryCreateResponseDto {

@@ -5,6 +5,7 @@ import com.example.yubbi.services.category.controller.dto.request.AdminCategoryU
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryCreateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryDeleteResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryListResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
 import com.example.yubbi.services.member.domain.Member
@@ -14,6 +15,7 @@ interface CategoryService {
     fun createCategory(adminCategoryCreateRequestDto: AdminCategoryCreateRequestDto, creator: Member): AdminCategoryCreateResponseDto
     fun getCategoryList(): CategoryListResponseDto
     fun getAdminCategoryList(): AdminCategoryListResponseDto
+    fun getAdminCategory(categoryId: Int): AdminCategoryResponseDto
     fun updateCategory(
         categoryId: Int,
         adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,

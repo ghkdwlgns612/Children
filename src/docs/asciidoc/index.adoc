@@ -125,7 +125,7 @@ include::{snippets}/category-getCategoryList-admin/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminGet]]
-=== [GET][ADMIN] Category 조회 (M)
+=== [GET][ADMIN] Category 조회
 관리자용 카테고리 조회에 사용할 api
 
 [[resources_category_adminGet_request]]
@@ -154,10 +154,9 @@ include::{snippets}/category-getCategory-admin/curl-request.adoc[]
 include::{snippets}/category-getCategory-admin/http-response.adoc[]
 
 ===== Error
-====== 1.리소스가 존재하지 않는 경우
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.조회하려는 카테고리가 존재하지 않는 경우
+include::{snippets}/category-getCategory-admin-notFound/curl-request.adoc[]
+include::{snippets}/category-getCategory-admin-notFound/http-response.adoc[]
 
 
 // ------------------------------------------------------------------------------------------------

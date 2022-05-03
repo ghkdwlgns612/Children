@@ -161,6 +161,34 @@ class AdminCategoryControllerTest {
     }
 
     @Test
+    @DisplayName("accessToken과 존재하지 않는 categoryId가 주어지고, 카테고리를 get 방식으로 조회했을때, 응답이 200 Ok이고 해당 category가 반환되는지 확인하는 테스트")
+    fun getCategory_givenAccessTokenAndNotExistCategoryId_whenGetCategory_thenStatusOkAndExistCategory() {
+        // given
+        val accessToken = "1_ADMIN"
+        val notExistCategoryId = 100
+
+        // when
+        val perform = mockMvc.perform(
+            get("/admin/categories/{categoryId}", notExistCategoryId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_CATEGORY.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_CATEGORY.message))
+            .andDo(
+                document(
+                    "category-getCategory-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
     @DisplayName("accessToken과 category 정보가 주어지고, 카테고리를 post 방식으로 생성했을때, 응답이 200 Ok이고 생성된 categoryId가 반환되는지 확인하는 테스트")
     fun createCategory_givenAccessTokenAndAdminCategoryCreateRequestDto_whenPostCategory_thenStatusOkAndExistCreatedCategoryId() {
         // given
