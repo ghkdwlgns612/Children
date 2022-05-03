@@ -289,14 +289,86 @@ class AdminCategoryControllerTest {
                         parameterWithName("categoryId").description("수정할 카테고리의 아이디")
                     ),
                     requestFields(
-                        fieldWithPath("title").description("수정할 카테고리의 제목"),
-                        fieldWithPath("description").description("수정할 카테고리의 상세설명"),
-                        fieldWithPath("activeStatus").description("수정할 카테고리의 활성 상태 +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
-                        fieldWithPath("priority").description("수정할 카테고리의 우선순위"),
+                        fieldWithPath("title").description("수정할 카테고리의 제목 (필수)"),
+                        fieldWithPath("description").description("수정할 카테고리의 상세설명 (필수)"),
+                        fieldWithPath("activeStatus").description("수정할 카테고리의 활성 상태 (필수) +" + "\n" + "( ACTIVE or IN_ACTIVE )"),
+                        fieldWithPath("priority").description("수정할 카테고리의 우선순위 (필수, 1이상)"),
                     ),
                     responseFields(
                         fieldWithPath("categoryId").description("수정된 카테고리 아이디")
                     )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken과 업데이트할 존재하지 않는 categoryId와 category 정보가 주어지고, 카테고리를 put 방식으로 업데이트했을때, 응답이 404 Not Found인지 확인하는 테스트")
+    fun updateCategory_givenAccessTokenAndNotExistCategoryIdAndAdminCategoryUpdateRequestDto_whenPutCategory_thenStatusOkAndExistUpdatedCategoryId() {
+        // given
+        val accessToken = "1_ADMIN"
+        val categoryId = 100
+        val adminCategoryUpdateRequestDto = AdminCategoryUpdateRequestDto(
+            "update 카테고리",
+            "update 카테고리 상세설명",
+            ActiveStatus.IN_ACTIVE,
+            3
+        )
+
+        // when
+        val perform = mockMvc.perform(
+            put("/admin/categories/{categoryId}", categoryId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(adminCategoryUpdateRequestDto))
+        )
+
+        // then
+        perform
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_CATEGORY.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_CATEGORY.message))
+            .andDo(
+                document(
+                    "category-updateCategory-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken과 업데이트할 categoryId와 잘못된 category 정보가 주어지고, 카테고리를 put 방식으로 업데이트했을때, 응답이 400 BadRequest인지 확인하는 테스트")
+    fun updateCategory_givenAccessTokenAndCategoryIdAndWrongAdminCategoryUpdateRequestDto_whenPutCategory_thenStatusBadRequest() {
+        // given
+        val accessToken = "1_ADMIN"
+        val categoryId = 1
+        val wrongAdminCategoryUpdateRequestDto = AdminCategoryCreateRequestDto(
+            "",
+            "카테고리 상세설명",
+            ActiveStatus.ACTIVE,
+            -1
+        )
+
+        // when
+        val perform = mockMvc.perform(
+            put("/admin/categories/{categoryId}", categoryId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .content(objectMapper.writeValueAsString(wrongAdminCategoryUpdateRequestDto))
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "category-updateCategory-admin-badRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
                 )
             )
     }

@@ -73,7 +73,7 @@ class AdminCategoryController(
     @PutMapping("/{categoryId}")
     fun updateCategory(
         @PathVariable categoryId: Int,
-        @RequestBody adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,
+        @Validated @RequestBody adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,
         @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?
     ): ResponseEntity<AdminCategoryUpdateResponseDto> {
 

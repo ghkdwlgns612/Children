@@ -99,7 +99,7 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         adminCategoryUpdateRequestDto: AdminCategoryUpdateRequestDto,
         modifier: Member
     ): AdminCategoryUpdateResponseDto {
-        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
         val categoryList = categoryRepository.findAllNotIsDeleted()
 
         val oldPriority = category.getPriority()!!

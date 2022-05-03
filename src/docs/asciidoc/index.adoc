@@ -197,7 +197,7 @@ include::{snippets}/category-createCategory-admin-badRequest/http-response.adoc[
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminUpdate]]
-=== [PUT][ADMIN] Category 수정 (M)
+=== [PUT][ADMIN] Category 수정
 관리자용 카테고리 수정에 사용할 api
 
 [[resources_category_adminUpdate_request]]
@@ -229,15 +229,13 @@ include::{snippets}/category-updateCategory-admin/curl-request.adoc[]
 include::{snippets}/category-updateCategory-admin/http-response.adoc[]
 
 ===== Error
-====== 1.리소스가 존재하지 않는 경우
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.삭제하려는 카테고리가 존재하지 않는 경우
+include::{snippets}/category-updateCategory-admin-notFound/curl-request.adoc[]
+include::{snippets}/category-updateCategory-admin-notFound/http-response.adoc[]
 
-====== 2.필수값이 누락된 경우
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 2.요청이 잘못된 경우 (필수값 누락 또는 잘못된 값 포함)
+include::{snippets}/category-updateCategory-admin-badRequest/curl-request.adoc[]
+include::{snippets}/category-updateCategory-admin-badRequest/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminDelete]]
