@@ -1,8 +1,10 @@
 package com.example.yubbi.services.category.service
 
+import com.example.yubbi.common.exception.custom.NotFoundCategoryException
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryCreateRequestDto
 import com.example.yubbi.services.category.controller.dto.request.AdminCategoryUpdateRequestDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryCreateResponseDto
+import com.example.yubbi.services.category.controller.dto.response.AdminCategoryDeleteResponseDto
 import com.example.yubbi.services.category.controller.dto.response.AdminCategoryUpdateResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListOfOneResponseDto
 import com.example.yubbi.services.category.controller.dto.response.CategoryListResponseDto
@@ -89,5 +91,26 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
         category.setUpdateInformation(adminCategoryUpdateRequestDto, modifier)
         return AdminCategoryUpdateResponseDto(category.getCategoryId()!!)
+    }
+
+    override fun deleteCategory(categoryId: Int, modifier: Member): AdminCategoryDeleteResponseDto {
+        val deleteTargetCategory = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
+        deleteTargetCategory.setIsDeletedAndDeletedAt(true, modifier)
+
+        val categoryList = categoryRepository.findAllNotIsDeleted()
+        categoryList.forEach { category ->
+            if (deleteTargetCategory.getPriority()!! < category.getPriority()!!) {
+                category.decreasePriority()
+            }
+        }
+
+        val deleteTargetContentList = deleteTargetCategory.getContentList()!!
+        deleteTargetContentList.forEach { content ->
+            if (content.getIsDeleted() == false) {
+                content.setIsDeletedAndDeletedAt(true, modifier)
+            }
+        }
+
+        return AdminCategoryDeleteResponseDto(deleteTargetCategory.getCategoryId()!!)
     }
 }

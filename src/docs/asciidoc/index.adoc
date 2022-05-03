@@ -241,7 +241,7 @@ include::{snippets}/category-updateCategory-admin/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_category_adminDelete]]
-=== [DELETE][ADMIN] Category 삭제 (M)
+=== [DELETE][ADMIN] Category 삭제
 관리자용 카테고리 삭제에 사용할 api +
 (해당 카테고리에 포함되는 모든 컨텐츠도 삭제된다.)
 
@@ -271,10 +271,10 @@ include::{snippets}/category-deleteCategory-admin/curl-request.adoc[]
 include::{snippets}/category-deleteCategory-admin/http-response.adoc[]
 
 ===== Error
-====== 1.리소스가 존재하지 않는 경우
+====== 1.삭제하려는 카테고리가 존재하지 않는 경우
 추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+include::{snippets}/category-deleteCategory-admin-notFound/curl-request.adoc[]
+include::{snippets}/category-deleteCategory-admin-notFound/http-response.adoc[]
 
 
 // ------------------------------------------------------------------------------------------------

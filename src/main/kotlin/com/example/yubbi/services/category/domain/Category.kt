@@ -113,4 +113,11 @@ class Category constructor() : BaseTime() {
         this.lastModifier = modifier
         setLastModifiedAt(LocalDateTime.now())
     }
+
+    fun setIsDeletedAndDeletedAt(isDeleted: Boolean, modifier: Member) {
+        this.isDeleted = isDeleted
+        this.lastModifier = modifier
+        this.setDeletedAt(LocalDateTime.now())
+        this.setLastModifiedAt(LocalDateTime.now())
+    }
 }

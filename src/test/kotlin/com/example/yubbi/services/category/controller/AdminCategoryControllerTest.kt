@@ -339,4 +339,32 @@ class AdminCategoryControllerTest {
                 )
             )
     }
+
+    @Test
+    @DisplayName("accessToken과 삭제할 존재하지 않는 categoryId가 주어지고, 카테고리를 delete 방식으로 삭제했을때, 응답이 404 Not Found인지 확인하는 테스트")
+    fun deleteCategory_givenAccessTokenAndNotExistCategoryId_whenDeleteCategory_thenStatusNotFound() {
+        // given
+        val accessToken = "1_ADMIN"
+        val categoryId = 100
+
+        // when
+        val perform = mockMvc.perform(
+            delete("/admin/categories/{categoryId}", categoryId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_CATEGORY.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_CATEGORY.message))
+            .andDo(
+                document(
+                    "category-deleteCategory-admin-notFound",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
 }

@@ -115,9 +115,14 @@ class AdminCategoryController(
         return ResponseEntity.ok().body(categoryService.updateCategory(categoryId, adminCategoryUpdateRequestDto, adminMember))
     }
 
-    // TODO : 구현 필요
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable categoryId: Int): ResponseEntity<AdminCategoryDeleteResponseDto> {
-        return ResponseEntity.ok().body(AdminCategoryDeleteResponseDto(categoryId))
+    fun deleteCategory(
+        @PathVariable categoryId: Int,
+        @RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String?
+    ): ResponseEntity<AdminCategoryDeleteResponseDto> {
+
+        val adminMember = memberService.getAdminMemberByAccessToken(accessToken)
+
+        return ResponseEntity.ok().body(categoryService.deleteCategory(categoryId, adminMember))
     }
 }
