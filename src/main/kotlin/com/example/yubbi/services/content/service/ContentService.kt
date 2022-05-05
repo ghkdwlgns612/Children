@@ -13,9 +13,9 @@ import com.example.yubbi.services.member.domain.Member
 import org.springframework.web.multipart.MultipartFile
 
 interface ContentService {
-    fun getContentList(categoryId: Int): ContentListResponseDto // 이 부분은 카테고리 완성 후 작성
-    fun getAdminContentList(categoryId: Int): AdminContentListResponseDto // 이 부분은 카테고리 완성 후 작성
-    fun getAdminContent(contentId: Int): AdminContentResponseDto // 이 부분은 카테고리 완성 후 작성
+    fun getContentList(categoryId: Int): ContentListResponseDto
+    fun getAdminContentList(categoryId: Int): AdminContentListResponseDto
+    fun getAdminContent(contentId: Int): AdminContentResponseDto
     fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto
     fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto // 수정자 생성
     fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto // 수정자도 업로드 해줘야함

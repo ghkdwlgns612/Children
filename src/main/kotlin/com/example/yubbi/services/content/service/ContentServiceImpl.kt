@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 import javax.transaction.Transactional
 
+@Suppress("NAME_SHADOWING")
 @Service
 @Transactional
 class ContentServiceImpl @Autowired constructor(
@@ -38,17 +39,17 @@ class ContentServiceImpl @Autowired constructor(
     private val categoryRepository: CategoryRepository
 ) : ContentService {
     override fun getContentList(categoryId: Int): ContentListResponseDto {
-        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
         return makeContentListResponseDto(category.getContentList(), category)
     }
 
     override fun getAdminContentList(categoryId: Int): AdminContentListResponseDto {
-        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow()
+        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
         return makeAdminContentListResponseDto(category.getContentList(), category)
     }
 
     override fun getAdminContent(contentId: Int): AdminContentResponseDto {
-        val content = contentRepository.findByIdNotIsDeleted(contentId).orElseThrow()
+        val content = contentRepository.findByIdNotIsDeleted(contentId).orElseThrow { NotFoundContentException() }
         return makeAdminContentResponseDto(content)
     }
 

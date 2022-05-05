@@ -283,7 +283,7 @@ include::{snippets}/category-deleteCategory-admin-notFound/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_content_getList]]
-=== [GET] Content 목록 조회 (M)
+=== [GET] Content 목록 조회
 컨텐츠 목록 조회에 사용할 api +
 아래의 조건을 만족하는 컨텐츠 목록을 조회한다. +
 - 컨텐츠가 활성상태 +
@@ -317,11 +317,13 @@ include::{snippets}/content-getContentList/curl-request.adoc[]
 include::{snippets}/content-getContentList/http-response.adoc[]
 
 ===== Error
-없음
+====== 1.카테고리가 존재하지 않을 경우
+include::{snippets}/content-getContentList-notFoundCategory/curl-request.adoc[]
+include::{snippets}/content-getContentList-notFoundCategory/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_content_adminGetList]]
-=== [GET][ADMIN] Content 목록 조회 (M)
+=== [GET][ADMIN] Content 목록 조회
 관리자용 컨텐츠 목록 조회에 사용할 api
 
 [[resources_content_adminGetList_request]]
@@ -350,11 +352,13 @@ include::{snippets}/content-getContentList-admin/curl-request.adoc[]
 include::{snippets}/content-getContentList-admin/http-response.adoc[]
 
 ===== Error
-없음
+====== 1.카테고리가 존재하지 않을 경우
+include::{snippets}/content-getContentList-admin-notFoundCategory/curl-request.adoc[]
+include::{snippets}/content-getContentList-admin-notFoundCategory/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_content_adminGet]]
-=== [GET][ADMIN] Content 조회 (M)
+=== [GET][ADMIN] Content 조회
 관리자용 컨텐츠 조회에 사용할 api
 
 [[resources_content_adminGet_request]]
@@ -383,10 +387,9 @@ include::{snippets}/content-getContent-admin/curl-request.adoc[]
 include::{snippets}/content-getContent-admin/http-response.adoc[]
 
 ===== Error
-====== 1.리소스가 존재하지 않는 경우
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.카테고리가 존재하지 않을 경우
+include::{snippets}/content-getContent-admin-notFoundContent/curl-request.adoc[]
+include::{snippets}/content-getContent-admin-notFoundContent/http-response.adoc[]
 
 // ------------------------------------------------------------------------------------------------
 [[resources_content_adminCreate]]
@@ -709,21 +712,21 @@ ADMIN이 FAQ하나를 삭제할 때 사용될 api
 ==== Request
 
 ===== Request HTTP Messages
-include::{snippets}/faq-delete-admin/http-request.adoc[]
+include::{snippets}/faq-deleteFaq-admin/http-request.adoc[]
 
 ===== Request Header
-include::{snippets}/faq-delete-admin/request-headers.adoc[]
+include::{snippets}/faq-deleteFaq-admin/request-headers.adoc[]
 
 ===== Request Path Parameter
-include::{snippets}/faq-delete-admin/path-parameters.adoc[]
+include::{snippets}/faq-deleteFaq-admin/path-parameters.adoc[]
 
 [[resources_faq_adminDelete_response]]
 ==== Response
 ===== Response Body
-include::{snippets}/faq-delete-admin/response-body.adoc[]
+include::{snippets}/faq-deleteFaq-admin/response-body.adoc[]
 
 ===== Response Field
-include::{snippets}/faq-delete-admin/response-fields.adoc[]
+include::{snippets}/faq-deleteFaq-admin/response-fields.adoc[]
 
 [[resources_faq_adminDelete_sample]]
 ==== Sample
