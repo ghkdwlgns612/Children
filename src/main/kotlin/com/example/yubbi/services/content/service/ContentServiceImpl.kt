@@ -62,13 +62,21 @@ class ContentServiceImpl @Autowired constructor(
                 )
             )
         } else {
-            val findContent = contentRepository.findById(contentId).orElseThrow() // 컨텐츠가 없을 경우 예외 발생
-            findContent.setUploadStatusAndIsDeleted(UploadStatus.UPLOADING, true)
+            val findContent = contentRepository.findById(contentId).orElseThrow()
             findContent
         }
 
-        val imageUrl = s3Service.upload(imageFile)
-        val videoUrl = s3Service.upload(videoFile)
+        val imageUrl = if (!imageFile.isEmpty) {
+            s3Service.upload(imageFile)
+        } else {
+            content.getImageUrl()!!
+        }
+        val videoUrl = if (!videoFile.isEmpty) {
+            s3Service.upload(videoFile)
+        } else {
+            content.getVideoUrl()!!
+        }
+
         content.setImageUrlAndVideoUrlAndUploadStatus(imageUrl, videoUrl, UploadStatus.SUCCESS)
 
         return AdminContentUploadResponseDto(content.getContentId(), content.getUploadStatus())
