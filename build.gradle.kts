@@ -39,6 +39,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("mysql:mysql-connector-java")
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
