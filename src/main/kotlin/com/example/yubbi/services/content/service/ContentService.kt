@@ -16,7 +16,7 @@ interface ContentService {
     fun getContentList(categoryId: Int): ContentListResponseDto
     fun getAdminContentList(categoryId: Int): AdminContentListResponseDto
     fun getAdminContent(contentId: Int): AdminContentResponseDto
-    fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto
+    fun uploadContent(imageFile: MultipartFile?, videoFile: MultipartFile?, member: Member, contentId: Int?): AdminContentUploadResponseDto
     fun createContent(adminContentCreateRequestDto: AdminContentCreateRequestDto, member: Member): AdminContentCreateResponseDto // 수정자 생성
     fun updateContent(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, member: Member): AdminContentUpdateResponseDto // 수정자도 업로드 해줘야함
     fun deleteContent(contentId: Int, member: Member): AdminContentDeleteResponseDto

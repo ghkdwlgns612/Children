@@ -3,22 +3,27 @@ package com.example.yubbi.services.content.controller
 import com.example.yubbi.common.exception.ErrorCode
 import com.example.yubbi.common.utils.ActiveStatus
 import com.example.yubbi.common.utils.UploadStatus
+import com.example.yubbi.infra.aws_s3.S3Service
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
 import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest
@@ -28,8 +33,10 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
+import org.springframework.restdocs.request.RequestDocumentation.partWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.request.RequestDocumentation.requestParameters
+import org.springframework.restdocs.request.RequestDocumentation.requestParts
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -47,6 +54,9 @@ class AdminContentControllerTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
+    @MockBean
+    lateinit var s3Service: S3Service
 
     @Test
     @DisplayName("카테고리 ID가 주어지고, get방식으로 리스트를 조회했을 때, 응답이 200 Ok이고  contentList들이 잘 반환되는지 확인하는 테스트")
@@ -340,6 +350,156 @@ class AdminContentControllerTest {
             .andDo(
                 document(
                     "content-getContent-admin-notFoundContent",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken,contentId,image,video가 주어지고, post방식으로 uploadContent api를 호출했을때, 응답이 200이고 contentId uploadStatus필드가 있는지 확인하는 테스트")
+    fun uploadContent_givenAccessTokenAndContentIdAndImageFileAndVideoFile_whenPostUploadContent_thenStatus200OkAndContentIdUploadStatusFields() {
+        // given
+        val accessToken = "1_ADMIN"
+        val contentId = 1
+        val image = MockMultipartFile("image", "image.png", "image/png", "<<png data>>".toByteArray())
+        val video = MockMultipartFile("video", "video.mp4", "video/mp4", "<<mp4 data>>".toByteArray())
+
+        given(s3Service.upload(image)).willReturn("s3ImageUrlForTest")
+        given(s3Service.upload(video)).willReturn("s3VideoUrlForTest")
+
+        // when
+        val perform = mockMvc.perform(
+            multipart("/admin/contents/upload")
+                .file(image)
+                .file(video)
+                .param("contentId", contentId.toString())
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("contentId").value(contentId))
+            .andExpect(jsonPath("uploadStatus").value("SUCCESS"))
+            .andDo(
+                document(
+                    "content-uploadContent-admin",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName(HttpHeaders.CONTENT_TYPE)
+                            .description("요청 메시지의 콘텐츠 타입 +" + "\n" + MediaType.MULTIPART_FORM_DATA),
+                        headerWithName(HttpHeaders.ACCEPT)
+                            .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
+                        headerWithName(HttpHeaders.AUTHORIZATION)
+                            .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
+                    ),
+                    requestParameters(
+                        parameterWithName("contentId").description("이미지, 비디오를 수정할 컨텐츠의 아이디 (선택) +" + "\n" + "등록시 미포함, 수정시 포함")
+                    ),
+                    requestParts(
+                        partWithName("image").description("업로드할 컨텐츠의 이미지 파일 +" + "\n" + "등록시 반드시 포함, 수정시 변경이 필요하면 포함"),
+                        partWithName("video").description("업로드할 컨텐츠의 비디오 파일 +" + "\n" + "등록시 반드시 포함, 수정시 변경이 필요하면 포함")
+                    ),
+                    responseFields(
+                        fieldWithPath("contentId").description("등록된 또는 수정된 컨텐츠 아이디"),
+                        fieldWithPath("uploadStatus").description("업로드된 상태 +" + "\n" + "(SUCCESS or FAIL)")
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken,존재하지 않는 contentId,image,video가 주어지고, post방식으로 uploadContent api를 호출했을때, 응답이 404 Not Found인지 확인하는 테스트")
+    fun uploadContent_givenAccessTokenAndNotExistContentIdAndImageFileAndVideoFile_whenPostUploadContent_thenStatus404NotFound() {
+        // given
+        val accessToken = "1_ADMIN"
+        val contentId = 100
+        val image = MockMultipartFile("image", "image.png", "image/png", "<<png data>>".toByteArray())
+        val video = MockMultipartFile("video", "video.mp4", "video/mp4", "<<mp4 data>>".toByteArray())
+
+        // when
+        val perform = mockMvc.perform(
+            multipart("/admin/contents/upload")
+                .file(image)
+                .file(video)
+                .param("contentId", contentId.toString())
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_CONTENT.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_CONTENT.message))
+            .andDo(
+                document(
+                    "content-uploadContent-admin-notFoundContent",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken과 contentId가 주어지고, post방식으로 uploadContent api를 호출했을때, 응답이 400 Bad Request인지 확인하는 테스트")
+    fun uploadContent_givenAccessTokenAndContentId_whenPostUploadContent_thenStatus400BadRequest() {
+        // given
+        val accessToken = "1_ADMIN"
+        val contentId = 1
+
+        // when
+        val perform = mockMvc.perform(
+            multipart("/admin/contents/upload")
+                .param("contentId", contentId.toString())
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "content-uploadContent-admin-updateBadRequest",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken과 image만 주어지고, post방식으로 uploadContent api를 호출했을때, 응답이 400 Bad Request인지 확인하는 테스트")
+    fun uploadContent_givenAccessTokenAndImage_whenPostUploadContent_thenStatus400BadRequest() {
+        // given
+        val accessToken = "1_ADMIN"
+        val image = MockMultipartFile("image", "image.png", "image/png", "<<png data>>".toByteArray())
+
+        // when
+        val perform = mockMvc.perform(
+            multipart("/admin/contents/upload")
+                .file(image)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
+            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andDo(
+                document(
+                    "content-uploadContent-admin-createBadRequest",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())
                 )

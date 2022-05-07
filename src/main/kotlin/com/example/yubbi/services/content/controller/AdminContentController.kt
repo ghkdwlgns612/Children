@@ -1,5 +1,7 @@
 package com.example.yubbi.services.content.controller
 
+import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForCreateException
+import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForUpdateException
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
 import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentCreateResponseDto
@@ -50,12 +52,20 @@ class AdminContentController @Autowired constructor(private val contentService: 
 
     @PostMapping("/upload")
     fun uploadContent(
-        @RequestParam("image") imageFile: MultipartFile,
-        @RequestParam("video") videoFile: MultipartFile,
+        @RequestParam("image") imageFile: MultipartFile?,
+        @RequestParam("video") videoFile: MultipartFile?,
         @RequestParam("contentId") contentId: Int?,
         @RequestHeader("Authorization") accessToken: String?
     ): ResponseEntity<AdminContentUploadResponseDto> {
         val member = memberService.getAdminMemberByAccessToken(accessToken)
+
+        if (contentId != null && (imageFile == null || imageFile.isEmpty) && (videoFile == null || videoFile.isEmpty)) {
+            throw NotEnoughInfoUploadContentForUpdateException()
+        }
+        if (contentId == null && (imageFile == null || imageFile.isEmpty || videoFile == null || videoFile.isEmpty)) {
+            throw NotEnoughInfoUploadContentForCreateException()
+        }
+
         return ResponseEntity.ok().body(contentService.uploadContent(imageFile, videoFile, member, contentId))
     }
 

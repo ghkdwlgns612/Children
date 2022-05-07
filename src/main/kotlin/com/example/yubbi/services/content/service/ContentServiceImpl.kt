@@ -55,15 +55,15 @@ class ContentServiceImpl @Autowired constructor(
         return makeAdminContentResponseDto(content)
     }
 
-    override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto {
+    override fun uploadContent(imageFile: MultipartFile?, videoFile: MultipartFile?, member: Member, contentId: Int?): AdminContentUploadResponseDto {
         val content = defineUploadMethodFactory.getDefineUploadMethod(contentId).getContent(contentId, member)
 
-        val imageUrl = if (!imageFile.isEmpty) {
+        val imageUrl = if (imageFile != null && !imageFile.isEmpty) {
             s3Service.upload(imageFile)
         } else {
             content.getImageUrl()!!
         }
-        val videoUrl = if (!videoFile.isEmpty) {
+        val videoUrl = if (videoFile != null && !videoFile.isEmpty) {
             s3Service.upload(videoFile)
         } else {
             content.getVideoUrl()!!

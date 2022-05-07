@@ -1,6 +1,8 @@
 package com.example.yubbi.common.exception
 
 import com.example.yubbi.common.exception.custom.ForbiddenException
+import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForCreateException
+import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForUpdateException
 import com.example.yubbi.common.exception.custom.NotFoundCategoryException
 import com.example.yubbi.common.exception.custom.NotFoundContentException
 import com.example.yubbi.common.exception.custom.NotFoundFaqException
@@ -31,7 +33,9 @@ class GlobalExceptionHandler {
         value = [
             HttpMessageNotReadableException::class,
             MethodArgumentNotValidException::class,
-            ConstraintViolationException::class
+            ConstraintViolationException::class,
+            NotEnoughInfoUploadContentForUpdateException::class,
+            NotEnoughInfoUploadContentForCreateException::class
         ]
     )
     fun badRequestExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
