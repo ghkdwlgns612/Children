@@ -23,6 +23,7 @@ import com.example.yubbi.services.content.controller.dto.response.ContentListOfO
 import com.example.yubbi.services.content.controller.dto.response.ContentListResponseDto
 import com.example.yubbi.services.content.domain.Content
 import com.example.yubbi.services.content.repository.ContentRepository
+import com.example.yubbi.services.content.service.factory.upload.ifGetContent.DefineUploadMethodFactory
 import com.example.yubbi.services.member.domain.Member
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -36,7 +37,8 @@ import javax.transaction.Transactional
 class ContentServiceImpl @Autowired constructor(
     private val contentRepository: ContentRepository,
     private val s3Service: S3Service,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val defineUploadMethodFactory: DefineUploadMethodFactory
 ) : ContentService {
     override fun getContentList(categoryId: Int): ContentListResponseDto {
         val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
@@ -54,17 +56,7 @@ class ContentServiceImpl @Autowired constructor(
     }
 
     override fun uploadContent(imageFile: MultipartFile, videoFile: MultipartFile, member: Member, contentId: Int?): AdminContentUploadResponseDto {
-        val content = if (contentId == null) {
-            contentRepository.save(
-                Content(
-                    null, null, null, null,
-                    ActiveStatus.IN_ACTIVE, null, null, null, UploadStatus.UPLOADING, true, member
-                )
-            )
-        } else {
-            val findContent = contentRepository.findById(contentId).orElseThrow()
-            findContent
-        }
+        val content = defineUploadMethodFactory.getDefineUploadMethod(contentId).getContent(contentId, member)
 
         val imageUrl = if (!imageFile.isEmpty) {
             s3Service.upload(imageFile)
