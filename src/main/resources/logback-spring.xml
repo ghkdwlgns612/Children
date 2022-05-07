@@ -2,8 +2,8 @@
 <configuration>
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
     <!-- log file path -->
-    <property name="LOG_INFO_PATH" value="./home/ec2-user/log/info"/>
-    <property name="LOG_ERR_PATH" value="./home/ec2-user/log/error"/>
+    <property name="LOG_INFO_PATH" value="./log/info"/>
+    <property name="LOG_ERR_PATH" value="./log/error"/>
     <!-- log file name -->
     <property name="LOG_INFO_FILE_NAME" value="info_"/>
     <property name="LOG_ERR_FILE_NAME" value="error_"/>
