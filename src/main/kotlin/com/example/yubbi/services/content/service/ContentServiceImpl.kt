@@ -24,6 +24,7 @@ import com.example.yubbi.services.content.controller.dto.response.ContentListRes
 import com.example.yubbi.services.content.domain.Content
 import com.example.yubbi.services.content.repository.ContentRepository
 import com.example.yubbi.services.content.service.factory.upload.ifGetContent.DefineUploadMethodFactory
+import com.example.yubbi.services.content.service.priority.PriorityMethod
 import com.example.yubbi.services.member.domain.Member
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -38,7 +39,8 @@ class ContentServiceImpl @Autowired constructor(
     private val contentRepository: ContentRepository,
     private val s3Service: S3Service,
     private val categoryRepository: CategoryRepository,
-    private val defineUploadMethodFactory: DefineUploadMethodFactory
+    private val defineUploadMethodFactory: DefineUploadMethodFactory,
+    private val priorityMethod: PriorityMethod
 ) : ContentService {
     override fun getContentList(categoryId: Int): ContentListResponseDto {
         val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
@@ -80,17 +82,9 @@ class ContentServiceImpl @Autowired constructor(
         val content = contentRepository.findById(adminContentCreateRequestDto.contentId).orElseThrow { NotFoundContentException() }
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentCreateRequestDto.categoryId)
 
-        content.setCreateInformation(adminContentCreateRequestDto, category, member)
+        priority = priorityMethod.createContentPriority(priority, categoryContents)
 
-        if (priority > categoryContents.size + 1) {
-            priority = categoryContents.size + 1
-        } else {
-            categoryContents.forEach() {
-                if (priority <= it.getPriority()!!) {
-                    it.increasePriority()
-                }
-            }
-        }
+        content.setCreateInformation(adminContentCreateRequestDto, category, member, priority)
 
         return makeAdminContentCreateResponseDto(content)
     }
@@ -100,23 +94,11 @@ class ContentServiceImpl @Autowired constructor(
         val category = categoryRepository.findById(adminContentUpdateRequestDto.categoryId).orElseThrow { NotFoundCategoryException() }
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(adminContentUpdateRequestDto.categoryId)
         val oldPriority = content.getPriority()
-        val updatePriority = adminContentUpdateRequestDto.priority
+        var updatePriority = adminContentUpdateRequestDto.priority
 
-        if (oldPriority!! < updatePriority) {
-            categoryContents.forEach { content ->
-                if (content.getPriority()!! in (oldPriority + 1)..updatePriority) {
-                    content.decreasePriority()
-                }
-            }
-        } else if (oldPriority > updatePriority) {
-            categoryContents.forEach { content ->
-                if (content.getPriority()!! in updatePriority until oldPriority) {
-                    content.increasePriority()
-                }
-            }
-        }
+        updatePriority = priorityMethod.updateContentPriority(oldPriority, updatePriority, categoryContents)
 
-        content.setUpdateInformation(adminContentUpdateRequestDto, category, member)
+        content.setUpdateInformation(adminContentUpdateRequestDto, category, member, updatePriority)
         return makeAdminContentUpdateResponseDto(content)
     }
 
@@ -126,11 +108,8 @@ class ContentServiceImpl @Autowired constructor(
         val categoryContents = contentRepository.findAllByCategoryIdAndNotIsDeleted(categoryId!!)
         deletedContent.setIsDeletedAndDeletedAt(true, member)
 
-        categoryContents.forEach() { content ->
-            if (deletedContent.getPriority()!! < content.getPriority()!!) {
-                content.decreasePriority()
-            }
-        }
+        priorityMethod.deleteContentPriority(categoryContents, deletedContent)
+
         return AdminContentDeleteResponseDto(deletedContent.getContentId()!!)
     }
 

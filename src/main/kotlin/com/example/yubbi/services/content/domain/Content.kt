@@ -162,33 +162,27 @@ class Content constructor() : BaseTime() {
         setLastModifiedAt(LocalDateTime.now())
     }
 
-    fun setCreateInformation(adminContentCreateRequestDto: AdminContentCreateRequestDto, category: Category, member: Member) {
+    fun setCreateInformation(adminContentCreateRequestDto: AdminContentCreateRequestDto, category: Category, member: Member, priority: Int?) {
         this.category = category
         this.title = adminContentCreateRequestDto.title
         this.description = adminContentCreateRequestDto.description
         this.activeStatus = ActiveStatus.IN_ACTIVE
         this.displayStartDate = adminContentCreateRequestDto.displayStartDate
         this.displayEndDate = adminContentCreateRequestDto.displayEndDate
-        this.priority = adminContentCreateRequestDto.priority
+        this.priority = priority
         this.lastModifier = member
         this.isDeleted = false
         setLastModifiedAt(LocalDateTime.now())
     }
 
-    fun setUploadStatusAndIsDeleted(uploadStatus: UploadStatus, isDeleted: Boolean) {
-        this.isDeleted = isDeleted
-        this.uploadStatus = uploadStatus
-        setLastModifiedAt(LocalDateTime.now())
-    }
-
-    fun setUpdateInformation(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, category: Category, member: Member) {
+    fun setUpdateInformation(adminContentUpdateRequestDto: AdminContentUpdateRequestDto, category: Category, member: Member, priority: Int) {
         this.category = category
         this.title = adminContentUpdateRequestDto.title
         this.description = adminContentUpdateRequestDto.description
         this.activeStatus = adminContentUpdateRequestDto.activeStatus
         this.displayStartDate = adminContentUpdateRequestDto.displayStartDate
         this.displayEndDate = adminContentUpdateRequestDto.displayEndDate
-        this.priority = adminContentUpdateRequestDto.priority
+        this.priority = priority
         this.lastModifier = member
         setLastModifiedAt(LocalDateTime.now())
     }
