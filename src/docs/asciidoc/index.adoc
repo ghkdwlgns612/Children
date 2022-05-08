@@ -19,7 +19,7 @@
 
 // ------------------------------------------------------------------------------------------------
 [[resources_member_login]]
-=== [POST] 회원 로그인 (M)
+=== [POST] 회원 로그인
 로그인(인증)에 사용될 api
 
 [[resources_member_login_request]]
@@ -48,10 +48,47 @@ include::{snippets}/member-login/curl-request.adoc[]
 include::{snippets}/member-login/http-response.adoc[]
 
 ===== Error
-====== 1.이메일 또는 비밀번호 틀렸을때
-추가 예정
-//include::{snippets}/~~~~~/curl-request.adoc[]
-//include::{snippets}/~~~~~/http-response.adoc[]
+====== 1.해당 이메일을 사용하는 회원이 존재하지 않을 때
+include::{snippets}/member-login-notFoundMember/curl-request.adoc[]
+include::{snippets}/member-login-notFoundMember/http-response.adoc[]
+====== 2.비밀번호가 일치하지 않을 때
+include::{snippets}/member-me-notMatchPassword/curl-request.adoc[]
+include::{snippets}/member-me-notMatchPassword/http-response.adoc[]
+
+// ------------------------------------------------------------------------------------------------
+[[resources_member_me]]
+=== [GET] 내 정보 조회
+내 정보 조회에 사용될 api
+
+[[resources_member_me_request]]
+==== Request
+===== Request HTTP Messages
+include::{snippets}/member-me/http-request.adoc[]
+
+===== Request Header
+include::{snippets}/member-me/request-headers.adoc[]
+
+[[resources_member_me_response]]
+==== Response
+===== Response Body
+include::{snippets}/member-me/response-body.adoc[]
+
+===== Response Field
+include::{snippets}/member-me/response-fields.adoc[]
+
+[[resources_member_me_sample]]
+==== Sample
+===== Success
+include::{snippets}/member-me/curl-request.adoc[]
+include::{snippets}/member-me/http-response.adoc[]
+
+===== Error
+====== 1. 토큰이 유효하지 않을 때
+include::{snippets}/member-me-wrongAccessToken/curl-request.adoc[]
+include::{snippets}/member-me-wrongAccessToken/http-response.adoc[]
+====== 2. 해당 회원이 존재하지 않을 때
+include::{snippets}/member-me-notFoundMember/curl-request.adoc[]
+include::{snippets}/member-me-notFoundMember/http-response.adoc[]
 
 
 // ------------------------------------------------------------------------------------------------
@@ -557,7 +594,7 @@ include::{snippets}/content-deleteContent-admin-notFoundContent/http-response.ad
 // ------------------------------------------------------------------------------------------------
 //  FAQ
 // ------------------------------------------------------------------------------------------------
-[[resources_faq_getList]]
+[[resources_faq]]
 == FAQ
 FAQ과 관련된 리소스
 

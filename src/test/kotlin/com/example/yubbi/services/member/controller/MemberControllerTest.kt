@@ -1,5 +1,6 @@
 package com.example.yubbi.services.member.controller
 
+import com.example.yubbi.common.exception.ErrorCode
 import com.example.yubbi.services.member.controller.dto.request.LoginRequestDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.DisplayName
@@ -20,6 +21,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -96,6 +98,13 @@ class MemberControllerTest {
         perform.andExpect(status().is4xxClientError)
             .andExpect(jsonPath("status").value(404))
             .andExpect(jsonPath("message").value("존재하지 않은 이메일입니다."))
+            .andDo(
+                document(
+                    "member-login-notFoundMember",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                )
+            )
     }
 
     @Test
@@ -116,5 +125,102 @@ class MemberControllerTest {
         perform.andExpect(status().is4xxClientError)
             .andExpect(jsonPath("status").value(404))
             .andExpect(jsonPath("message").value("비밀번호가 일치하지 않습니다."))
+            .andDo(
+                document(
+                    "member-me-notMatchPassword",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken이 주어지고, get방식으로 내정보조회를 했을때, status는 200 Ok이고, 회원이 정보가 반환되는지 확인하는 테스트")
+    fun getMyInfo_givenAccessToken_whenGetMe_thenStatus200OkAndMemberInfo() {
+        // given
+        val accessToken = "1_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            get("/members/me")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform.andExpect(status().isOk)
+            .andExpect(jsonPath("email").value("intern@lguplus.co.kr"))
+            .andExpect(jsonPath("name").value("intern"))
+            .andExpect(jsonPath("role").value("ADMIN"))
+            .andDo(
+                document(
+                    "member-me",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName(HttpHeaders.ACCEPT)
+                            .description("응답받을 콘텐츠 타입 +" + "\n" + MediaType.APPLICATION_JSON),
+                        headerWithName(HttpHeaders.AUTHORIZATION)
+                            .description("인증 정보 헤더 +" + "\n" + "로그인시 받은 accessToken")
+                    ),
+                    responseFields(
+                        fieldWithPath("email").description("회원의 이메일"),
+                        fieldWithPath("name").description("회원의 이름"),
+                        fieldWithPath("role").description("회원의 역할 +" + "\n" + "( ADMIN or MEMBER )"),
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("잘못된 accessToken이 주어지고, get방식으로 내정보조회를 했을때, status는 401인지 확인하는 테스트")
+    fun getMyInfo_givenWrongAccessToken_whenGetMe_thenStatus401() {
+        // given
+        val accessToken = "1_ADM"
+
+        // when
+        val perform = mockMvc.perform(
+            get("/members/me")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform.andExpect(status().isUnauthorized)
+            .andExpect(jsonPath("status").value(ErrorCode.UNAUTHORIZED.status))
+            .andExpect(jsonPath("message").value(ErrorCode.UNAUTHORIZED.message))
+            .andDo(
+                document(
+                    "member-me-wrongAccessToken",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("accessToken(존재하지 않는 회원)이 주어지고, get방식으로 내정보조회를 했을때, status는 404인지 확인하는 테스트")
+    fun getMyInfo_givenAccessTokenWithoutMember_whenGetMe_thenStatus404() {
+        // given
+        val accessToken = "100_ADMIN"
+
+        // when
+        val perform = mockMvc.perform(
+            get("/members/me")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+        )
+
+        // then
+        perform.andExpect(status().isNotFound)
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_FOUND_MEMBER.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_FOUND_MEMBER.message))
+            .andDo(
+                document(
+                    "member-me-notFoundMember",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                )
+            )
     }
 }

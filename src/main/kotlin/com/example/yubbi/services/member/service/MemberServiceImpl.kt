@@ -7,6 +7,7 @@ import com.example.yubbi.common.exception.custom.UnAuthorizedException
 import com.example.yubbi.common.utils.Role
 import com.example.yubbi.services.member.controller.dto.request.LoginRequestDto
 import com.example.yubbi.services.member.controller.dto.response.LoginResponseDto
+import com.example.yubbi.services.member.controller.dto.response.MyInfoResponseDto
 import com.example.yubbi.services.member.domain.Member
 import com.example.yubbi.services.member.repository.MemberRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,6 +32,22 @@ class MemberServiceImpl @Autowired constructor(private val memberRepository: Mem
         }
     }
 
+    override fun getMyInfo(accessToken: String?): MyInfoResponseDto {
+        if (accessToken == null) {
+            throw UnAuthorizedException()
+        }
+        checkValidAccessToken(accessToken)
+
+        val memberId = getMemberIdByAccessToken(accessToken)
+        val member = memberRepository.findById(memberId).orElseThrow { NotFoundMemberException() }
+
+        return MyInfoResponseDto(
+            member.getEmail()!!,
+            member.getName()!!,
+            member.getRole()!!
+        )
+    }
+
     override fun getAdminMemberByAccessToken(accessToken: String?): Member {
         if (accessToken == null) {
             throw UnAuthorizedException()
@@ -38,8 +55,7 @@ class MemberServiceImpl @Autowired constructor(private val memberRepository: Mem
         checkValidAccessToken(accessToken)
         checkAdminRole(accessToken)
 
-        val indexOf = accessToken.indexOf(accessTokenDelimiter)
-        val adminMemberId = accessToken.substring(0, indexOf).toInt()
+        val adminMemberId = getMemberIdByAccessToken(accessToken)
 
         return memberRepository.findById(adminMemberId).get()
     }
@@ -67,5 +83,10 @@ class MemberServiceImpl @Autowired constructor(private val memberRepository: Mem
         if (member.isEmpty || member.get().getRole() != Role.ADMIN || role != Role.ADMIN.name) {
             throw ForbiddenException()
         }
+    }
+
+    private fun getMemberIdByAccessToken(accessToken: String): Int {
+        val indexOf = accessToken.indexOf(accessTokenDelimiter)
+        return accessToken.substring(0, indexOf).toInt()
     }
 }
