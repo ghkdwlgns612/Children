@@ -13,6 +13,12 @@ interface CategoryRepository : JpaRepository<Category, Int> {
     @Query("select c from Category c where c.isDeleted = false")
     fun findAllNotIsDeleted(): List<Category>
 
+    @Query("select c from Category c join fetch c.lastModifier where c.isDeleted = false")
+    fun findAllNotIsDeletedWithLastModifier(): List<Category>
+
     @Query("select c from Category c where c.categoryId = :categoryId and c.isDeleted = false")
     fun findByIdNotIsDeleted(categoryId: Int): Optional<Category>
+
+    @Query("select c from Category c join fetch c.lastModifier where c.categoryId = :categoryId and c.isDeleted = false")
+    fun findByIdNotIsDeletedWithLastModifier(categoryId: Int): Optional<Category>
 }

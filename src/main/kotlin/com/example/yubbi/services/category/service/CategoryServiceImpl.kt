@@ -41,7 +41,7 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     @Transactional(readOnly = true)
     override fun getAdminCategoryList(): AdminCategoryListResponseDto {
-        val categoryList = categoryRepository.findAllNotIsDeleted()
+        val categoryList = categoryRepository.findAllNotIsDeletedWithLastModifier()
 
         val adminCategoryListOfOneResponseDto = categoryList.map { category ->
 
@@ -68,7 +68,7 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     @Transactional(readOnly = true)
     override fun getAdminCategory(categoryId: Int): AdminCategoryResponseDto {
-        val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
+        val category = categoryRepository.findByIdNotIsDeletedWithLastModifier(categoryId).orElseThrow { NotFoundCategoryException() }
         val lastModifier = category.getLastModifier()!!
 
         return AdminCategoryResponseDto(

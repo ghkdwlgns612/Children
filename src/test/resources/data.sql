@@ -25,7 +25,7 @@ values(1, '책읽는TV', '책읽는TV 상세설명', 'ACTIVE', 2, now(), now(), 
 insert into category(category_id, title, description, active_status, priority, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
 values(2, '영어유치원', '영어유치원 상세설명', 'ACTIVE', 1, now(), now(), 2, null, false);
 insert into category(category_id, title, description, active_status, priority, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
-values(3, '누리학습', '누리학습 상세설명', 'ACTIVE', 3, now(), now(), 1, null, false);
+values(3, '누리학습', '누리학습 상세설명', 'ACTIVE', 3, now(), now(), 4, null, false);
 
 insert into category(category_id, title, description, active_status, priority, created_at, last_modified_at, last_modifier, deleted_at, is_deleted)
 values(4, '비활성화카테고리', '비활성화카테고리 상세설명', 'IN_ACTIVE', 4, now(), now(), 1, null, false);
