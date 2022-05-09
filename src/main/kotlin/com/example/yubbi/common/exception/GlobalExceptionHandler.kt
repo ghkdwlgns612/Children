@@ -7,7 +7,9 @@ import com.example.yubbi.common.exception.custom.NotFoundCategoryException
 import com.example.yubbi.common.exception.custom.NotFoundContentException
 import com.example.yubbi.common.exception.custom.NotFoundFaqException
 import com.example.yubbi.common.exception.custom.NotFoundMemberException
+import com.example.yubbi.common.exception.custom.NotMatchImageTypeException
 import com.example.yubbi.common.exception.custom.NotMatchPasswordException
+import com.example.yubbi.common.exception.custom.NotMatchVideoTypeException
 import com.example.yubbi.common.exception.custom.UnAuthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -34,8 +36,6 @@ class GlobalExceptionHandler {
             HttpMessageNotReadableException::class,
             MethodArgumentNotValidException::class,
             ConstraintViolationException::class,
-            NotEnoughInfoUploadContentForUpdateException::class,
-            NotEnoughInfoUploadContentForCreateException::class
         ]
     )
     fun badRequestExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
@@ -83,5 +83,25 @@ class GlobalExceptionHandler {
     fun notFoundExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
         log.error(e.message)
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse(ErrorCode.NOT_FOUND_CONTENT))
+    }
+    @ExceptionHandler(value = [NotEnoughInfoUploadContentForCreateException::class])
+    fun notEnoughInfoUploadContentForCreateExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error(e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.NOT_ENOUGH_INFO_CREATE))
+    }
+    @ExceptionHandler(value = [NotEnoughInfoUploadContentForUpdateException::class])
+    fun notEnoughInfoUploadContentForUpdateExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error(e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.NOT_ENOUGH_INFO_UPDATE))
+    }
+    @ExceptionHandler(value = [NotMatchImageTypeException::class])
+    fun notMatchImageTypeExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error(e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.NOT_MATCH_IMAGE_TYPE))
+    }
+    @ExceptionHandler(value = [NotMatchVideoTypeException::class])
+    fun notMatchVideoTypeExceptionHandler(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error(e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(ErrorCode.NOT_MATCH_VIDEO_TYPE))
     }
 }

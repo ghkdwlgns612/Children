@@ -1,7 +1,6 @@
 package com.example.yubbi.services.content.controller
 
-import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForCreateException
-import com.example.yubbi.common.exception.custom.NotEnoughInfoUploadContentForUpdateException
+import com.example.yubbi.services.content.controller.checkContent.UploadCheckService
 import com.example.yubbi.services.content.controller.dto.request.AdminContentCreateRequestDto
 import com.example.yubbi.services.content.controller.dto.request.AdminContentUpdateRequestDto
 import com.example.yubbi.services.content.controller.dto.response.AdminContentCreateResponseDto
@@ -30,7 +29,11 @@ import org.springframework.web.multipart.MultipartFile
 @Validated
 @RestController
 @RequestMapping("/admin/contents")
-class AdminContentController @Autowired constructor(private val contentService: ContentService, private val memberService: MemberService) {
+class AdminContentController @Autowired constructor(
+    private val contentService: ContentService,
+    private val memberService: MemberService,
+    private val uploadCheckService: UploadCheckService
+) {
 
     @GetMapping
     fun getContentList(
@@ -59,12 +62,7 @@ class AdminContentController @Autowired constructor(private val contentService: 
     ): ResponseEntity<AdminContentUploadResponseDto> {
         val member = memberService.getAdminMemberByAccessToken(accessToken)
 
-        if (contentId != null && (imageFile == null || imageFile.isEmpty) && (videoFile == null || videoFile.isEmpty)) {
-            throw NotEnoughInfoUploadContentForUpdateException()
-        }
-        if (contentId == null && (imageFile == null || imageFile.isEmpty || videoFile == null || videoFile.isEmpty)) {
-            throw NotEnoughInfoUploadContentForCreateException()
-        }
+        uploadCheckService.checkImageAndVideo(contentId, imageFile, videoFile)
 
         return ResponseEntity.ok().body(contentService.uploadContent(imageFile, videoFile, member, contentId))
     }

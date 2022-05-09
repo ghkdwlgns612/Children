@@ -465,8 +465,8 @@ class AdminContentControllerTest {
         // then
         perform
             .andExpect(status().isBadRequest)
-            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
-            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_ENOUGH_INFO_UPDATE.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_ENOUGH_INFO_UPDATE.message))
             .andDo(
                 document(
                     "content-uploadContent-admin-updateBadRequest",
@@ -495,8 +495,8 @@ class AdminContentControllerTest {
         // then
         perform
             .andExpect(status().isBadRequest)
-            .andExpect(jsonPath("status").value(ErrorCode.BAD_REQUEST.status))
-            .andExpect(jsonPath("message").value(ErrorCode.BAD_REQUEST.message))
+            .andExpect(jsonPath("status").value(ErrorCode.NOT_ENOUGH_INFO_CREATE.status))
+            .andExpect(jsonPath("message").value(ErrorCode.NOT_ENOUGH_INFO_CREATE.message))
             .andDo(
                 document(
                     "content-uploadContent-admin-createBadRequest",
