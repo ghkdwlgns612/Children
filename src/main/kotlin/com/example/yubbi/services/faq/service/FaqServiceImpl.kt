@@ -51,9 +51,9 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
         val pageRequest = PageRequest.of(page - 1, size, Sort.Direction.ASC, "faqId")
 
         val pageOfFaqs = if (word == null) {
-            faqRepository.getPageOfFaqs(pageRequest)
+            faqRepository.getPageOfFaqsWithLastModifier(pageRequest)
         } else {
-            faqRepository.getPageOfFaqsWithWord(pageRequest, word)
+            faqRepository.getPageOfFaqsWithWordWithLastModifier(pageRequest, word)
         }
 
         val adminFaqListOfOneResponseDto = pageOfFaqs.map { faq ->
@@ -79,7 +79,7 @@ class FaqServiceImpl(private val faqRepository: FaqRepository) : FaqService {
 
     @Transactional(readOnly = true)
     override fun getAdminFaq(faqId: Int): AdminFaqResponseDto {
-        val faq = faqRepository.findByIdNotIsDeleted(faqId).orElseThrow { NotFoundFaqException() }
+        val faq = faqRepository.findByIdNotIsDeletedWithLastModifier(faqId).orElseThrow { NotFoundFaqException() }
 
         val lastModifier = faq.getLastModifier()!!
 

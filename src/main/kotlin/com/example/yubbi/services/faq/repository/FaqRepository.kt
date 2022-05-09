@@ -13,6 +13,12 @@ interface FaqRepository : JpaRepository<Faq, Int> {
     fun getPageOfFaqs(pageable: Pageable): Page<Faq>
 
     @Query(
+        value = "select f from Faq f join fetch f.lastModifier where f.isDeleted = false",
+        countQuery = "select count(f) from Faq f where f.isDeleted = false"
+    )
+    fun getPageOfFaqsWithLastModifier(pageable: Pageable): Page<Faq>
+
+    @Query(
         "select f" +
             " from Faq f" +
             " where ( f.question like %:word% or f.answer like %:word% )" +
@@ -20,6 +26,21 @@ interface FaqRepository : JpaRepository<Faq, Int> {
     )
     fun getPageOfFaqsWithWord(pageable: Pageable, word: String): Page<Faq>
 
+    @Query(
+        value = "select f" +
+            " from Faq f join fetch f.lastModifier" +
+            " where ( f.question like %:word% or f.answer like %:word% )" +
+            " and f.isDeleted = false",
+        countQuery = "select count(f)" +
+            " from Faq f" +
+            " where ( f.question like %:word% or f.answer like %:word% )" +
+            " and f.isDeleted = false"
+    )
+    fun getPageOfFaqsWithWordWithLastModifier(pageable: Pageable, word: String): Page<Faq>
+
     @Query("select f from Faq f where f.faqId = :faqId and f.isDeleted = false")
     fun findByIdNotIsDeleted(faqId: Int): Optional<Faq>
+
+    @Query("select f from Faq f join fetch f.lastModifier where f.faqId = :faqId and f.isDeleted = false")
+    fun findByIdNotIsDeletedWithLastModifier(faqId: Int): Optional<Faq>
 }
