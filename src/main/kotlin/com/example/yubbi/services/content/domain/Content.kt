@@ -166,7 +166,7 @@ class Content constructor() : BaseTime() {
         this.category = category
         this.title = adminContentCreateRequestDto.title
         this.description = adminContentCreateRequestDto.description
-        this.activeStatus = ActiveStatus.IN_ACTIVE
+        this.activeStatus = adminContentCreateRequestDto.activeStatus
         this.displayStartDate = adminContentCreateRequestDto.displayStartDate
         this.displayEndDate = adminContentCreateRequestDto.displayEndDate
         this.priority = priority
