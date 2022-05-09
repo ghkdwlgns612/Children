@@ -49,7 +49,8 @@ class ContentServiceImpl @Autowired constructor(
 
     override fun getAdminContentList(categoryId: Int): AdminContentListResponseDto {
         val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
-        return makeAdminContentListResponseDto(category.getContentList(), category)
+        val contents = contentRepository.findAllByCategoryIdAndNotIsDeletedWithLastModifier(categoryId)
+        return makeAdminContentListResponseDto(contents, category)
     }
 
     override fun getAdminContent(contentId: Int): AdminContentResponseDto {
@@ -121,11 +122,11 @@ class ContentServiceImpl @Autowired constructor(
         return AdminContentUpdateResponseDto(content.getContentId()!!)
     }
 
-    private fun makeAdminContentListResponseDto(contents: MutableList<Content>?, category: Category): AdminContentListResponseDto {
+    private fun makeAdminContentListResponseDto(contents: List<Content>, category: Category): AdminContentListResponseDto {
         val result = arrayListOf<AdminContentListOfOneResponseDto>()
         val categoryResponse = AdminCategoryOfContentResponseDto(category.getCategoryId()!!, category.getTitle()!!, category.getDescription()!!)
 
-        for (content in contents!!) {
+        for (content in contents) {
             val modifier = AdminContentModifierResponseDto(
                 content.getLastModifier()!!.getMemberId()!!,
                 content.getLastModifier()!!.getEmail()!!,

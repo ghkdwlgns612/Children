@@ -14,4 +14,7 @@ interface ContentRepository : JpaRepository<Content, Int> {
 
     @Query("select c from Content c where c.category.categoryId = :categoryId and c.isDeleted = false")
     fun findAllByCategoryIdAndNotIsDeleted(categoryId: Int): List<Content>
+
+    @Query("select c from Content c join fetch c.lastModifier where c.category.categoryId = :categoryId and c.isDeleted = false")
+    fun findAllByCategoryIdAndNotIsDeletedWithLastModifier(categoryId: Int): List<Content>
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export MYSQL_YUBBI_URL="jdbc:mysql://yubbi-database.csebcqevndde.ap-northeast-2.rds.amazonaws.com:3306/yubbi"
+export MYSQL_YUBBI_URL="jdbc:mysql://yubbi-database.csebcqevndde.ap-northeast-2.rds.amazonaws.com:3306/yubbi?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"
 export MYSQL_YUBBI_ID="admin"
 export MYSQL_YUBBI_PW="12345678"
 export AWS_ACCESS_KEY="AKIAVRKDLKKXQZVZ3SHY"
