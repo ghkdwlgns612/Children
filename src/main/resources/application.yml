@@ -12,13 +12,13 @@ spring:
         database: mysql
         show-sql: true
         hibernate:
-            ddl-auto: create
-        defer-datasource-initialization: true
+            ddl-auto: update
+#        defer-datasource-initialization: true
 
-    sql:
-        init:
-            data-locations: classpath*:db/init.sql
-            mode: always
+#    sql:
+#        init:
+#            data-locations: classpath*:db/init.sql
+#            mode: always
 cloud:
     aws:
         credentials:
