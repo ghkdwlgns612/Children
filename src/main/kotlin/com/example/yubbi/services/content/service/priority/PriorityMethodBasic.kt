@@ -20,24 +20,22 @@ class PriorityMethodBasic : PriorityMethod {
     }
 
     override fun updateContentPriority(oldPriority: Int?, updatePriority: Int, categoryContents: List<Content>): Int {
-        var priority = updatePriority
-        if (priority > categoryContents.size + 1) {
-            priority = categoryContents.size + 1
-        } else {
-            if (oldPriority!! < updatePriority) {
-                categoryContents.forEach { content ->
-                    if (content.getPriority()!! in (oldPriority + 1)..updatePriority) {
-                        content.decreasePriority()
-                    }
+        val priority = updatePriority.coerceAtMost(categoryContents.size)
+
+        if (oldPriority!! < updatePriority) {
+            categoryContents.forEach { content ->
+                if (content.getPriority()!! in (oldPriority + 1)..updatePriority) {
+                    content.decreasePriority()
                 }
-            } else if (oldPriority > updatePriority) {
-                categoryContents.forEach { content ->
-                    if (content.getPriority()!! in updatePriority until oldPriority) {
-                        content.increasePriority()
-                    }
+            }
+        } else if (oldPriority > updatePriority) {
+            categoryContents.forEach { content ->
+                if (content.getPriority()!! in updatePriority until oldPriority) {
+                    content.increasePriority()
                 }
             }
         }
+
         return priority
     }
 

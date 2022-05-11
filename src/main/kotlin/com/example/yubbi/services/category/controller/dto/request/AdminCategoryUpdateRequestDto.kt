@@ -14,5 +14,5 @@ data class AdminCategoryUpdateRequestDto(
     val activeStatus: ActiveStatus,
 
     @field:Min(1)
-    val priority: Int
+    var priority: Int
 )

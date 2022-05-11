@@ -91,16 +91,12 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
         var priority = adminCategoryCreateRequestDto.priority
 
-        val categoryList = categoryRepository.findAllNotIsDeleted()
+        val categoriesCount = categoryRepository.countAllNotIsDeleted()
 
-        if (priority > categoryList.size + 1) {
-            priority = categoryList.size + 1
+        if (priority > categoriesCount + 1) {
+            priority = categoriesCount + 1
         } else {
-            categoryList.forEach() {
-                if (priority <= it.getPriority()!!) {
-                    it.increasePriority()
-                }
-            }
+            categoryRepository.bulkPriorityIncreaseInRange(priority, categoriesCount)
         }
 
         val createdCategory = categoryRepository.save(
@@ -122,23 +118,15 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         modifier: Member
     ): AdminCategoryUpdateResponseDto {
         val category = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
-        val categoryList = categoryRepository.findAllNotIsDeleted()
+        val categoriesCount = categoryRepository.countAllNotIsDeleted()
 
         val oldPriority = category.getPriority()!!
-        val updatePriority = adminCategoryUpdateRequestDto.priority
+        adminCategoryUpdateRequestDto.priority = adminCategoryUpdateRequestDto.priority.coerceAtMost(categoriesCount)
 
-        if (oldPriority < updatePriority) {
-            categoryList.forEach { category ->
-                if (category.getPriority()!! in (oldPriority + 1)..updatePriority) {
-                    category.decreasePriority()
-                }
-            }
-        } else if (oldPriority > updatePriority) {
-            categoryList.forEach { category ->
-                if (category.getPriority()!! in updatePriority until oldPriority) {
-                    category.increasePriority()
-                }
-            }
+        if (oldPriority < adminCategoryUpdateRequestDto.priority) {
+            categoryRepository.bulkPriorityDecreaseInRange(oldPriority + 1, adminCategoryUpdateRequestDto.priority)
+        } else if (oldPriority > adminCategoryUpdateRequestDto.priority) {
+            categoryRepository.bulkPriorityIncreaseInRange(adminCategoryUpdateRequestDto.priority, oldPriority - 1)
         }
 
         category.setUpdateInformation(adminCategoryUpdateRequestDto, modifier)
@@ -147,14 +135,11 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     override fun deleteCategory(categoryId: Int, modifier: Member): AdminCategoryDeleteResponseDto {
         val deleteTargetCategory = categoryRepository.findByIdNotIsDeleted(categoryId).orElseThrow { NotFoundCategoryException() }
+        val categoriesCount = categoryRepository.countAllNotIsDeleted()
+
         deleteTargetCategory.setIsDeletedAndDeletedAt(true, modifier)
 
-        val categoryList = categoryRepository.findAllNotIsDeleted()
-        categoryList.forEach { category ->
-            if (deleteTargetCategory.getPriority()!! < category.getPriority()!!) {
-                category.decreasePriority()
-            }
-        }
+        categoryRepository.bulkPriorityDecreaseInRange(deleteTargetCategory.getPriority()!! + 1, categoriesCount)
 
         val deleteTargetContentList = deleteTargetCategory.getContentList()!!
         deleteTargetContentList.forEach { content ->
