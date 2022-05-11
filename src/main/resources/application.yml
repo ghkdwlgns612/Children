@@ -1,8 +1,8 @@
 spring:
     servlet:
         multipart:
-            max-file-size: 5000000000
-            max-request-size: 5000000000
+            max-file-size: 5000MB
+            max-request-size: 5000MB
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: ${MYSQL_YUBBI_URL}

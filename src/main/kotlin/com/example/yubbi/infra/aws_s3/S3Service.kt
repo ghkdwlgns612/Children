@@ -4,11 +4,9 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
-import com.amazonaws.util.IOUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.UUID
 
@@ -25,13 +23,10 @@ class S3Service(
         val fileName = UUID.randomUUID().toString() + "-" + file.originalFilename
         val objMeta = ObjectMetadata()
 
-        val bytes = IOUtils.toByteArray(file.inputStream)
-        objMeta.contentLength = bytes.size.toLong()
-
-        val byteArrayIs = ByteArrayInputStream(bytes)
+        objMeta.contentLength = file.size
 
         s3Client.putObject(
-            PutObjectRequest(bucket, fileName, byteArrayIs, objMeta)
+            PutObjectRequest(bucket, fileName, file.inputStream, objMeta)
                 .withCannedAcl(CannedAccessControlList.PublicRead)
         )
 
