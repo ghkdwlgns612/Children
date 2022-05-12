@@ -1,10 +1,5 @@
 #!/bin/bash
 
-export MYSQL_YUBBI_URL="jdbc:mysql://yubbi-database.csebcqevndde.ap-northeast-2.rds.amazonaws.com:3306/yubbi?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul"
-export MYSQL_YUBBI_ID="admin"
-export MYSQL_YUBBI_PW="12345678"
-export AWS_ACCESS_KEY="AKIAVRKDLKKXQZVZ3SHY"
-export AWS_SECRET_KEY="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"
 
 BUILD_JAR=$(ls /home/ec2-user/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
